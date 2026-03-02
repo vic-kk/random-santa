@@ -13,5 +13,22 @@ export default defineConfig({
   base: './',
   build: {
     outDir: 'docs',
-  }
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
+  esbuild: {
+    drop: ['console', 'debugger'],
+    minifyIdentifiers: true,
+    minifySyntax: true,
+    minifyWhitespace: true,
+    legalComments: 'none',
+    target: 'es2020',
+  },
 })
