@@ -8,19 +8,16 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-
     "santa": "node node_scripts/santa_resort.mjs",
     "santa_auto": "npm run santa && npm run build",
-
     "mock_csv": "node node_scripts/generate_mock_csv.mjs",
     "mock_csv:50": "node node_scripts/generate_mock_csv.mjs 50",
     "mock_csv:200": "node node_scripts/generate_mock_csv.mjs 200",
-
     "mock_auto": "npm run mock_csv && npm run santa"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-toastify": "^11.0.5"
   },
   "devDependencies": {
@@ -28,13 +25,13 @@
     "@types/node": "^25.2.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@vitejs/plugin-react": "^5.1.4",
     "eslint": "^9.15.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.12.0",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.15.0",
-    "vite": "^6.0.1"
+    "vite": "^7.3.1"
   }
 }
