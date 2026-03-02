@@ -10,11 +10,6 @@ type TargetUserData = DeliveryData | undefined;
 
 type TargetEntry = [DeliveryDataKeys, DeliveryDataValue];
 
-const URLS = {
-  tgAdmin: 'https://t.me/+omk7AIuSRmZmMjMy7',
-  googleForm: 'https://forms.gle/ichPY3Vzn1FY5fUL9',
-};
-
 const LS_KEY = 'SANTAUniqId';
 
 const GenerateRandomSixDigitNumber = () => {
@@ -27,7 +22,7 @@ function App() {
     localStorage.setItem(LS_KEY, `${randomNumber}`);
   }
 
-  const number = parseInt((localStorage?.getItem(LS_KEY) as string), 10);
+  const number = parseInt((localStorage.getItem(LS_KEY) as string), 10);
 
   const target: TargetUserData = DELIVERY_DATA?.get(number);
 
@@ -45,7 +40,7 @@ function App() {
 
   return (
     <>
-      <Header number={number} adminUrl={URLS.tgAdmin} />
+      <Header number={number}/>
 
       {FEATURES.IN_SERVICE && (
         <InService />
@@ -54,7 +49,7 @@ function App() {
       {!FEATURES.IN_SERVICE && (
         <>
           {!FEATURES.SANTA_READY && (
-            <GoogleForm url={URLS.googleForm} />
+            <GoogleForm/>
           )} 
 
           {FEATURES.SANTA_READY && (

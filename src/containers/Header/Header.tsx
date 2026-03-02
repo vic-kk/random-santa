@@ -1,13 +1,13 @@
 import santaLogo from '/santa.png'
+import { URLS } from 'src/data';
 import { CopyToClipboard } from 'src/containers';
 import './Header.css'
 
 interface HeaderProps {
   number: number;
-  adminUrl: string;
 };
 
-const Header = ({ number, adminUrl }: HeaderProps) => {
+const Header = ({ number }: HeaderProps) => {
   return (
     <div className='santa-header'>
       <div>
@@ -17,20 +17,18 @@ const Header = ({ number, adminUrl }: HeaderProps) => {
         <div className='title'>
           Твой уникальный номер:
         </div>
-        <div className="number">
-          <CopyToClipboard
-            value={number.toString()}
-            successMessage='Ваш номер скопирован'
-          >
-            {number}
-          </CopyToClipboard>
-        </div>
+        <CopyToClipboard
+          copyValue={number.toString()}
+          successMessage='Ваш номер скопирован'
+        >
+          <span className="number">{number}</span>
+        </CopyToClipboard>
         <div>
           Твой номер уже сохранен на этой странице, но, <br/>
           на всякий случай, <u><b>сфотографируй</b></u> или <u><b>запиши его</b></u>
         </div>
         <div>
-          <a className='tg' href={adminUrl} target='_blank'>группа в TG</a>
+          <a className='tg' href={URLS.tgAdmin} target='_blank'>группа в TG</a>
         </div>
       </div>
     </div>

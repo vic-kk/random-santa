@@ -1,11 +1,11 @@
 .in_service {
   font-size: 2rem;
-}
-
-.in_service::before,
-.in_service::after {
-  content: '';
-  animation: dots 1.5s steps(4, end) infinite;
+  
+  &::before,
+  &::after {
+    content: '';
+    animation: dots 1.5s steps(4, end) infinite;
+  }
 }
 
 @keyframes dots {

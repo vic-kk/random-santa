@@ -5,16 +5,22 @@ import './CopyToClipboard.css'
 interface CopyToClipboardProps {
   title?: string;
   successMessage?: string;
-  value: string;
+  copyValue: string;
   showEmoji?: boolean;
 };
 
-const CopyToClipboard = ({ title = 'Нажми, чтобы скопировать', successMessage, value, showEmoji, children }: PropsWithChildren<CopyToClipboardProps>) => {
+const CopyToClipboard = ({
+  title = 'Нажми, чтобы скопировать',
+  successMessage,
+  copyValue,
+  showEmoji,
+  children
+}: PropsWithChildren<CopyToClipboardProps>) => {
   const copyСonfig = {
     successMessage: successMessage,
   }
 
-  const clickHandler = () => copyToClipboard(value.toString(), copyСonfig)
+  const clickHandler = () => copyToClipboard(copyValue, copyСonfig)
 
   return (
     <div>

@@ -1,12 +1,15 @@
-.line-head {
-  font-weight: bold;
-  text-decoration: underline;
+.recipient-line {
+  .title {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+  
+  .ozon_address {
+    color: aqua;
+  }
+  
+  .wb_address {
+    color: #bc75ff;
+  }
 }
 
-.ozon_address {
-  color: aqua;
-}
-
-.wb_address {
-  color: #bc75ff;
-}

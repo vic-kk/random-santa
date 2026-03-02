@@ -1,19 +1,23 @@
 .santa-header {
   display: flex;
-}
-
-.title {
-  font-size: 2rem;
-}
-
-.number {
-  font-size: 5rem;
-  font-weight: bold;
-  letter-spacing: .5rem;
-  color: rgb(255, 220, 63);
-}
-
-.tg {
-  font-size: 1.2rem;
-  color: rgb(0, 191, 255);
+  margin-bottom: 2rem;
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .number {
+    --letter-space: .5rem;
+    
+    font-size: 5rem;
+    font-weight: bold;
+    letter-spacing: var(--letter-space);
+    margin-right: calc(var(--letter-space)*-1);
+    color: rgb(255, 220, 63);
+  }
+  
+  .tg {
+    font-size: 1.2rem;
+    color: rgb(0, 191, 255);
+  }
 }
