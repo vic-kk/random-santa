@@ -1,8 +1,11 @@
 .recipient {
   display: flex;
   flex-direction: column;
-  text-align: left;
   gap: 1rem;
   max-width: 600px;
   margin: 0 auto 2rem;
+
+  h2 {
+    text-align: center;
+  }
 }

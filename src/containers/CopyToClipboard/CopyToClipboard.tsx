@@ -23,16 +23,14 @@ const CopyToClipboard = ({
   const clickHandler = () => copyToClipboard(copyValue, copyСonfig)
 
   return (
-    <div>
-      <span
-        className='clickable'
-        onClick={() => clickHandler()}
-        title={title}
-      >
-        {showEmoji && <span>⿻ </span>}
-        {children}
-      </span>
-    </div>
+    <span
+      className='clickable'
+      onClick={() => clickHandler()}
+      title={title}
+    >
+      {showEmoji && <span>⿻&nbsp;</span>}
+      {children}
+    </span>
   )
 }
 

@@ -1,6 +1,7 @@
 .santa-header {
   display: flex;
   margin-bottom: 2rem;
+  text-align: center;
   
   .title {
     font-size: 2rem;

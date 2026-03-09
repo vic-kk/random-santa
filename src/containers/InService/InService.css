@@ -1,14 +1,15 @@
 .in_service {
   font-size: 2rem;
+  text-align: center;
   
   &::before,
   &::after {
     content: '';
-    animation: dots 1.5s steps(4, end) infinite;
+    animation: dotsReveal 1.5s steps(4, end) infinite;
   }
 }
 
-@keyframes dots {
+@keyframes dotsReveal {
   0%, 20% {
     content: '';
   }
