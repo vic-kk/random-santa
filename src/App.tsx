@@ -2,29 +2,18 @@ import { useMemo } from 'react';
 import { FEATURES } from 'src/features';
 import { DeliveryData, DeliveryDataKeys, DeliveryDataValue, DELIVERY_DATA } from 'src/data';
 import { GoogleForm, Header, InService, Recipient, RecipientLine } from 'src/containers';
+import { useSantaId } from 'src/hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 type TargetUserData = DeliveryData | undefined;
-
 type TargetEntry = [DeliveryDataKeys, DeliveryDataValue];
 
-const LS_KEY = 'SANTAUniqId';
-
-const GenerateRandomSixDigitNumber = () => {
-  return Math.floor(100000 + Math.random() * 900000);
-}
-
 function App() {
-  if (!localStorage.getItem(LS_KEY)) {
-    const randomNumber = GenerateRandomSixDigitNumber();
-    localStorage.setItem(LS_KEY, `${randomNumber}`);
-  }
+  const santaId = useSantaId();
 
-  const number = parseInt((localStorage.getItem(LS_KEY) as string), 10);
-
-  const target: TargetUserData = DELIVERY_DATA?.get(number);
+  const target: TargetUserData = DELIVERY_DATA?.get(santaId);
 
   const RenderRecipientLines = useMemo(() => {
     if (!target) return null;
@@ -40,7 +29,7 @@ function App() {
 
   return (
     <>
-      <Header number={number}/>
+      <Header uid={santaId}/>
 
       {FEATURES.IN_SERVICE && (
         <InService />

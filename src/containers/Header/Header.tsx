@@ -4,10 +4,10 @@ import { CopyToClipboard } from 'src/containers';
 import './Header.css'
 
 interface HeaderProps {
-  number: number;
+  uid: string;
 };
 
-const Header = ({ number }: HeaderProps) => {
+const Header = ({ uid }: HeaderProps) => {
   return (
     <div className='santa-header'>
       <div>
@@ -18,10 +18,10 @@ const Header = ({ number }: HeaderProps) => {
           Твой уникальный номер:
         </div>
         <CopyToClipboard
-          copyValue={number.toString()}
+          copyValue={uid}
           successMessage='Ваш номер скопирован'
         >
-          <span className="number">{number}</span>
+          <span className="number">{uid}</span>
         </CopyToClipboard>
         <div>
           Твой номер уже сохранен на этой странице, но, <br/>
