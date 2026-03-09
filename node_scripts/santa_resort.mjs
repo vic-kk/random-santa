@@ -104,7 +104,7 @@ const reSortNoShift = (input) => {
   const newIds = new Map();
   const newSort = input.map((item, i) => {
     const result = {
-      id_santa: parseInt(receivers[i], 10), // <- преобразуем в число
+      id_santa: receivers[i],
       wishes: item.wishes,
       ozon_address: item.ozon_address,
       gender: item.gender,
@@ -255,7 +255,7 @@ const generateAddressesFile = (data, assignments, newSort) => {
   content += 'export type DeliveryData = Record<DeliveryDataKeys, DeliveryDataValue>\n\n';
 
   // 3. Создаём Map вместо массива - ИЗМЕНЕНИЕ ЗДЕСЬ
-  content += 'export const DELIVERY_DATA = new Map<number, DeliveryData>([\n';
+  content += 'export const DELIVERY_DATA = new Map<string, DeliveryData>([\n';
   
   // Группируем записи по id_santa (ключу Map)
   const mapEntries = new Map();
@@ -269,7 +269,7 @@ const generateAddressesFile = (data, assignments, newSort) => {
   // Генерируем записи для Map
   const entriesArray = [];
   newSort.forEach((item, i) => {
-    entriesArray.push(`  [ ${item.id_santa}, {\n`);
+    entriesArray.push(`  [ "${item.id_santa}", {\n`);
     entriesArray.push(`    gender: "${item.gender}",\n`);
     entriesArray.push(`    wishes: ${JSON.stringify(item.wishes)},\n`);
     entriesArray.push(`    ozon_address: ${JSON.stringify(item.ozon_address)},\n`);
