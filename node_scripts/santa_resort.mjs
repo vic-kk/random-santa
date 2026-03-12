@@ -319,9 +319,8 @@ const main = async () => {
     console.log(`🎁 Участников обработано: ${data.length}`);
     
     // Показываем несколько примеров назначений
-    console.log('\n🔍 Результат назначений:');
-    // const sampleAssignments = Array.from(newIds.entries()).slice(0, 3);
-    const sampleAssignments = Array.from(newIds.entries());
+    console.log('\n🔍 Результат назначений, первые 3 записи:');
+    const sampleAssignments = Array.from(newIds.entries()).slice(0, 3);
     sampleAssignments.forEach(([santaId, gifteeId]) => {
       const santa = data.find(d => d.id === santaId);
       const giftee = data.find(d => d.id === gifteeId);
