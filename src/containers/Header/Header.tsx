@@ -1,4 +1,4 @@
-import santaLogo from '/santa.png'
+import santaLogo from '/santa.webp'
 import { URLS } from 'src/data';
 import { CopyToClipboard } from 'src/containers';
 import './Header.css'
@@ -11,7 +11,7 @@ const Header = ({ uid }: HeaderProps) => {
   return (
     <div className='santa-header'>
       <div>
-        <img src={santaLogo} className="logo" width={250} alt="santa logo" />
+        <img src={santaLogo} className="logo" width={250} height={250} alt="santa logo" />
       </div>
       <div>
         <div className='title'>
