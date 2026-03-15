@@ -157,89 +157,89 @@ async function showFallbackPrompt(
     try {
       // Создаем модальное окно для ручного копирования
       const modal = document.createElement('div');
-      modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-      `;
+      modal.style.cssText = 
+        "position: fixed;"+
+        "top: 0;"+
+        "left: 0;"+
+        "right: 0;"+
+        "bottom: 0;"+
+        "background: rgba(0, 0, 0, 0.7);"+
+        "display: flex;"+
+        "align-items: center;"+
+        "justify-content: center;"+
+        "z-index: 9999;"
+      ;
 
       const modalContent = document.createElement('div');
-      modalContent.style.cssText = `
-        background: white;
-        padding: 24px;
-        border-radius: 12px;
-        max-width: 500px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      `;
+      modalContent.style.cssText = 
+        "background: white;"+
+        "padding: 24px;"+
+        "border-radius: 12px;"+
+        "max-width: 500px;"+
+        "width: 90%;"+
+        "max-height: 80vh;"+
+        "overflow-y: auto;"+
+        "box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);"
+      ;
 
       const title = document.createElement('h3');
       title.textContent = 'Копирование текста';
-      title.style.cssText = `
-        margin: 0 0 16px 0;
-        color: #333;
-        font-size: 18px;
-      `;
+      title.style.cssText = 
+        "margin: 0 0 16px 0;"+
+        "color: #333;"+
+        "font-size: 18px;"
+      ;
 
       const textArea = document.createElement('textarea');
       textArea.value = originalText || displayText;
-      textArea.style.cssText = `
-        width: 100%;
-        height: 120px;
-        padding: 12px;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px;
-        font-family: monospace;
-        font-size: 14px;
-        resize: vertical;
-        margin-bottom: 16px;
-        box-sizing: border-box;
-      `;
+      textArea.style.cssText = 
+        "width: 100%;"+
+        "height: 120px;"+
+        "padding: 12px;"+
+        "border: 2px solid #e0e0e0;"+
+        "border-radius: 8px;"+
+        "font-family: monospace;"+
+        "font-size: 14px;"+
+        "resize: vertical;"+
+        "margin-bottom: 16px;"+
+        "box-sizing: border-box;"
+      ;
       textArea.readOnly = true;
 
       const buttonContainer = document.createElement('div');
-      buttonContainer.style.cssText = `
-        display: flex;
-        gap: 12px;
-        justify-content: flex-end;
-      `;
+      buttonContainer.style.cssText = 
+        "display: flex;"+
+        "gap: 12px;"+
+        "justify-content: flex-end;"
+      ;
 
       const copyButton = document.createElement('button');
       copyButton.textContent = 'Выделить и скопировать';
-      copyButton.style.cssText = `
-        padding: 10px 20px;
-        background: #007bff;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background 0.2s;
-      `;
+      copyButton.style.cssText = 
+        "padding: 10px 20px;"+
+        "background: #007bff;"+
+        "color: white;"+
+        "border: none;"+
+        "border-radius: 6px;"+
+        "cursor: pointer;"+
+        "font-size: 14px;"+
+        "transition: background 0.2s;"
+      ;
       copyButton.onmouseover = () => copyButton.style.background = '#0056b3';
       copyButton.onmouseout = () => copyButton.style.background = '#007bff';
 
       const closeButton = document.createElement('button');
       closeButton.textContent = 'Закрыть';
-      closeButton.style.cssText = `
-        padding: 10px 20px;
-        background: #6c757d;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background 0.2s;
-      `;
+      closeButton.style.cssText = 
+        "padding: 10px 20px;"+
+        "background: #6c757d;"+
+        "color: white;"+
+        "border: none;"+
+        "border-radius: 6px;"+
+        "cursor: pointer;"+
+        "font-size: 14px;"+
+        "transition: background 0.2s;"
+      ;
       closeButton.onmouseover = () => closeButton.style.background = '#545b62';
       closeButton.onmouseout = () => closeButton.style.background = '#6c757d';
 
@@ -377,40 +377,40 @@ function createNativeNotification(message: string, type: 'success' | 'error') {
   const notification = document.createElement('div');
   const backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
   
-  notification.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 16px 24px;
-    background: ${backgroundColor};
-    color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 9999;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 14px;
-    max-width: 350px;
-    animation: slideIn 0.3s ease-out;
-  `;
+  notification.style.cssText = 
+    "position: fixed;"+
+    "top: 20px;"+
+    "right: 20px;"+
+    "padding: 16px 24px;"+
+    `background: ${backgroundColor};`+
+    "color: white;"+
+    "border-radius: 8px;"+
+    "box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);"+
+    "z-index: 9999;"+
+    "font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;"+
+    "font-size: 14px;"+
+    "max-width: 350px;"+
+    "animation: slideIn 0.3s ease-out;"
+  ;
   
   // Добавляем стили для анимации
   const style = document.createElement('style');
-  style.textContent = `
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
-  `;
+  style.textContent = 
+    "@keyframes slideIn {"+
+      "from {"+
+        "transform: translateX(100%);"+
+        "opacity: 0;"+
+      "}"+
+      "to {"+
+        "transform: translateX(0);"+
+        "opacity: 1;"+
+      "}"+
+    "}"+
+    "@keyframes fadeOut {"+
+      "from { opacity: 1; }"+
+      "to { opacity: 0; }"+
+    "}"
+  ;
   document.head.appendChild(style);
   
   notification.textContent = message;
