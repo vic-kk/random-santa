@@ -15,6 +15,10 @@ const PATHS = {
   backupDir: path.resolve(__dirname, '../_local/backups'),
 };
 
+const makeColorString = (str) => {
+  return `\x1b[32m${str}\x1b[0m`;
+}
+
 // 🔧 Утилиты для работы с файлами
 const ensureDir = async (dirPath) => {
   try {
@@ -36,10 +40,10 @@ const createBackup = async (filePath) => {
     
     await ensureDir(PATHS.backupDir);
     await fs.copyFile(filePath, backupPath);
-    console.log(`💾 Создана резервная копия: ${backupName}`);
+    console.log(`💾 Создана копия ранней версии: ${backupName}`);
     return true;
   } catch (error) {
-    console.log('ℹ️ Файл для бэкапа не найден, создаём новый');
+    console.log('ℹ️  Ранняя версия не найдена');
     return false;
   }
 };
@@ -98,7 +102,7 @@ const reSortNoShift = (input) => {
     throw new Error(`❌ Обнаружено ${conflicts} конфликтов после коррекции!`);
   }
   
-  console.log('✅ Жеребьёвка прошла успешно!');
+  console.log(makeColorString('✅ Жеребьёвка завершена успешно!'));
   
   // 4. Создаём Map соответствий
   const newIds = new Map();
@@ -134,7 +138,7 @@ const parseCSV = async () => {
   
   // Парсим заголовок
   const headers = parseCSVLine(lines[0]);
-  console.log(`📊 Найдено ${lines.length - 1} записей`);
+  console.log(makeColorString(`📊 Найдено ${lines.length - 1} записей`));
   
   // Парсим данные
   const pureAddresses = [];
@@ -285,10 +289,14 @@ const generateAddressesFile = (data, assignments, newSort) => {
 
 // 🚀 Основная функция
 const main = async () => {
+  const mainStartTime = performance.now();
   console.log('🎅 ЗАПУСК РАСПРЕДЕЛИТЕЛЯ ТАЙНОГО САНТЫ');
   console.log('='.repeat(50));
   
   try {
+    // 0. Делаем бэкап старого файла
+    await createBackup(PATHS.addresses);
+
     // 1. Чтение и парсинг CSV
     const data = await parseCSV();
     
@@ -305,18 +313,17 @@ const main = async () => {
     await fs.writeFile(PATHS.parsed, parsedContent, 'utf-8');
     console.log(`📄 Сохранены распарсенные данные: ${PATHS.parsed}`);
     
-    // 4. Делаем бэкап старого файла
-    await createBackup(PATHS.addresses);
-    
-    // 5. Генерируем новый файл адресов
+    // 4. Генерируем новый файл адресов
     const addressesContent = generateAddressesFile(data, newIds, newSort);
     await ensureDir(path.dirname(PATHS.addresses));
     await fs.writeFile(PATHS.addresses, addressesContent, 'utf-8');
     
     console.log('='.repeat(50));
-    console.log('✅ ВСЁ ГОТОВО!');
+    console.log(makeColorString('✅ ВСЁ ГОТОВО!'));
+    const mainDuration = performance.now() - mainStartTime;
+    console.log(`⏱️  Длительность скрипта: ${mainDuration.toFixed(2)} мс (${(mainDuration / 1000).toFixed(3)} сек)`);
+    console.log(`🎁 Участников обработано: ${makeColorString(data.length)}`);
     console.log(`📁 Новые данные сохранены в: ${PATHS.addresses}`);
-    console.log(`🎁 Участников обработано: ${data.length}`);
     
     // Показываем несколько примеров назначений
     console.log('\n🔍 Результат назначений, первые 3 записи:');
