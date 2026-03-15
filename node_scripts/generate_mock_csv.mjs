@@ -25,9 +25,15 @@ function generateRandomDate() {
   return `${dateStr.replace(',', '')} GMT+7`;
 }
 
-// Функция для генерации случайного номера (6 цифр)
-function generateRandomNumber() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+// Функция для генерации случайного номера (6 цифр) - гарантирует уникальность
+function generateRandomNumber(existingNumbers) {
+  let number;
+  do {
+    number = Math.floor(100000 + Math.random() * 900000).toString();
+  } while (existingNumbers.has(number));
+  
+  existingNumbers.add(number);
+  return number;
 }
 
 // Функция для генерации случайного гендера
@@ -85,10 +91,10 @@ function generateRandomAddress(city = null) {
   return `${selectedCity}, улица ${street} ${building}${corpus}`;
 }
 
-// Функция для генерации одной строки данных
-function generateDataRow(index) {
+// Функция для генерации одной строки данных (теперь принимает existingNumbers)
+function generateDataRow(index, existingNumbers) {
   const timestamp = generateRandomDate();
-  const uniqueNumber = generateRandomNumber();
+  const uniqueNumber = generateRandomNumber(existingNumbers);
   const gender = generateRandomGender();
   const wish = generateRandomWish();
   
@@ -122,6 +128,29 @@ function generateDataRow(index) {
   ].join(',');
 }
 
+// Функция для проверки уникальности номеров (для отладки)
+function validateUniqueNumbers(rows) {
+  const numbers = new Set();
+  const duplicates = [];
+  
+  for (let i = 1; i < rows.length; i++) { // Пропускаем заголовок
+    const columns = rows[i].split(',');
+    const number = columns[1]?.replace(/"/g, ''); // Извлекаем номер (вторая колонка)
+    
+    if (numbers.has(number)) {
+      duplicates.push(number);
+    } else {
+      numbers.add(number);
+    }
+  }
+  
+  return {
+    isValid: duplicates.length === 0,
+    duplicates,
+    totalNumbers: numbers.size
+  };
+}
+
 // Функция для создания CSV файла
 export function createCSVFile(filename, rowCount = 100) {
   // Заголовки
@@ -136,8 +165,10 @@ export function createCSVFile(filename, rowCount = 100) {
   
   // Генерируем строки данных
   const rows = [headers];
+  const existingNumbers = new Set(); // Множество для отслеживания уникальных номеров
+  
   for (let i = 0; i < rowCount; i++) {
-    rows.push(generateDataRow(i));
+    rows.push(generateDataRow(i, existingNumbers));
   }
   
   // Объединяем все строки
@@ -145,10 +176,18 @@ export function createCSVFile(filename, rowCount = 100) {
   
   // Записываем в файл
   writeFileSync(filename, csvContent, 'utf8');
-  console.log(`Файл ${filename} успешно создан с ${rowCount} строками данных.`);
+  console.log(`✅ Файл ${filename} успешно создан с ${rowCount} строками данных.`);
+  
+  // Проверяем уникальность номеров
+  const validation = validateUniqueNumbers(rows);
+  if (validation.isValid) {
+    console.log(`✅ Все ${validation.totalNumbers} номеров уникальны.`);
+  } else {
+    console.log(`❌ Найдены дубликаты: ${validation.duplicates.join(', ')}`);
+  }
   
   // Выводим первые 3 строки для проверки
-  console.log('\nПервые 3 строки файла:');
+  console.log('\n📋 Первые 3 строки файла:');
   console.log(rows.slice(0, 4).join('\n'));
 }
 
@@ -168,7 +207,7 @@ async function main() {
   try {
     createCSVFile(CSVPaths, rowCount);
   } catch (error) {
-    console.error('Ошибка при создании файла:', error.message);
+    console.error('❌ Ошибка при создании файла:', error.message);
     process.exit(1);
   }
 }
