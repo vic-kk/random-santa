@@ -167,8 +167,7 @@ async function showFallbackPrompt(
         "display: flex;"+
         "align-items: center;"+
         "justify-content: center;"+
-        "z-index: 9999;"
-      ;
+        "z-index: 9999;";
 
       const modalContent = document.createElement('div');
       modalContent.style.cssText = 
@@ -179,16 +178,14 @@ async function showFallbackPrompt(
         "width: 90%;"+
         "max-height: 80vh;"+
         "overflow-y: auto;"+
-        "box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);"
-      ;
+        "box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);";
 
       const title = document.createElement('h3');
       title.textContent = 'Копирование текста';
       title.style.cssText = 
         "margin: 0 0 16px 0;"+
         "color: #333;"+
-        "font-size: 18px;"
-      ;
+        "font-size: 18px;";
 
       const textArea = document.createElement('textarea');
       textArea.value = originalText || displayText;
@@ -202,16 +199,14 @@ async function showFallbackPrompt(
         "font-size: 14px;"+
         "resize: vertical;"+
         "margin-bottom: 16px;"+
-        "box-sizing: border-box;"
-      ;
+        "box-sizing: border-box;";
       textArea.readOnly = true;
 
       const buttonContainer = document.createElement('div');
       buttonContainer.style.cssText = 
         "display: flex;"+
         "gap: 12px;"+
-        "justify-content: flex-end;"
-      ;
+        "justify-content: flex-end;";
 
       const copyButton = document.createElement('button');
       copyButton.textContent = 'Выделить и скопировать';
@@ -223,8 +218,7 @@ async function showFallbackPrompt(
         "border-radius: 6px;"+
         "cursor: pointer;"+
         "font-size: 14px;"+
-        "transition: background 0.2s;"
-      ;
+        "transition: background 0.2s;";
       copyButton.onmouseover = () => copyButton.style.background = '#0056b3';
       copyButton.onmouseout = () => copyButton.style.background = '#007bff';
 
@@ -238,8 +232,7 @@ async function showFallbackPrompt(
         "border-radius: 6px;"+
         "cursor: pointer;"+
         "font-size: 14px;"+
-        "transition: background 0.2s;"
-      ;
+        "transition: background 0.2s;";
       closeButton.onmouseover = () => closeButton.style.background = '#545b62';
       closeButton.onmouseout = () => closeButton.style.background = '#6c757d';
 
@@ -390,8 +383,7 @@ function createNativeNotification(message: string, type: 'success' | 'error') {
     "font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;"+
     "font-size: 14px;"+
     "max-width: 350px;"+
-    "animation: slideIn 0.3s ease-out;"
-  ;
+    "animation: slideIn 0.3s ease-out;";
   
   // Добавляем стили для анимации
   const style = document.createElement('style');
@@ -409,8 +401,7 @@ function createNativeNotification(message: string, type: 'success' | 'error') {
     "@keyframes fadeOut {"+
       "from { opacity: 1; }"+
       "to { opacity: 0; }"+
-    "}"
-  ;
+    "}";
   document.head.appendChild(style);
   
   notification.textContent = message;
