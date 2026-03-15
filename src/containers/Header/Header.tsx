@@ -1,4 +1,4 @@
-import santaLogo from '/santa.webp'
+import santaLogo from '/santa-250.webp'
 import { URLS } from 'src/data';
 import { CopyToClipboard } from 'src/containers';
 import './Header.css'
