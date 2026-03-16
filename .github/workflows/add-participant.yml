@@ -1,0 +1,57 @@
+name: Add Participant
+
+on:
+  repository_dispatch:
+    types: [new-participant]
+
+jobs:
+  add-participant:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Add participant to JSON
+        env:
+          PARTICIPANT_ID: ${{ github.event.client_payload.id }}
+          PARTICIPANT_NAME: ${{ github.event.client_payload.name }}
+          PARTICIPANT_WISH: ${{ github.event.client_payload.wish }}
+        run: |
+          # Читаем текущий JSON
+          node -e "
+          const fs = require('fs');
+          
+          let data = { participants: [] };
+          try {
+            data = JSON.parse(fs.readFileSync('participants.json'));
+          } catch (e) {
+            console.log('Создаем новый файл');
+          }
+          
+          data.participants.push({
+            id: process.env.PARTICIPANT_ID,
+            name: process.env.PARTICIPANT_NAME,
+            wish: process.env.PARTICIPANT_WISH,
+            registeredAt: new Date().toISOString()
+          });
+          
+          // Сохраняем с красивым форматированием
+          fs.writeFileSync('participants.json', JSON.stringify(data, null, 2));
+          console.log('Участник добавлен:', process.env.PARTICIPANT_NAME);
+          "
+          
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add participants.json
+          git diff --staged --quiet || git commit -m "Add new participant: ${{ github.event.client_payload.name }}"
+          git push
