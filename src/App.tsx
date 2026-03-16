@@ -29,7 +29,7 @@ function App() {
 
   return (
     <>
-      <Header uid={santaId}/>
+      <Header/>
 
       {FEATURES.IN_SERVICE && (
         <InService />

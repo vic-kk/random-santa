@@ -1,13 +1,12 @@
 import santaLogo from '/santa-250.webp'
 import { URLS } from 'src/data';
 import { CopyToClipboard } from 'src/containers';
+import { useSantaId } from 'src/hooks';
 import './Header.css'
 
-interface HeaderProps {
-  uid: string;
-};
+const Header = () => {
+  const uid = useSantaId();
 
-const Header = ({ uid }: HeaderProps) => {
   return (
     <div className='santa-header'>
       <div>
