@@ -13,12 +13,12 @@ const TEXTS = {
 
 const Recipient = ({ target, children }: PropsWithChildren<RecipientProps>) => {
   if (!target) return (
-    <h2>{TEXTS.err}</h2>
+    <h2 className='ooops'>{TEXTS.err}</h2>
   )
 
   return (
     <div className='recipient'>
-      <h2>{TEXTS.title}</h2>
+      <h2 className='recipient_header'>{TEXTS.title}</h2>
       {children}
     </div>
   )

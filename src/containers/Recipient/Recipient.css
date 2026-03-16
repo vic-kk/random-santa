@@ -4,8 +4,9 @@
   gap: 1rem;
   max-width: 600px;
   margin: 0 auto 2rem;
+}
 
-  h2 {
-    text-align: center;
-  }
+.recipient_header,
+.ooops {
+  text-align: center;
 }
