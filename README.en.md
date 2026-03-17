@@ -6,9 +6,6 @@ A project for automatically drawing Secret Santas based on Google Forms response
 
 The project exists in two different states, which are configured separately. This allows for collecting participant data first and then conducting the drawing.
 
-> [!IMPORTANT]
-> Stage management is configured in the [`src/features/features.ts`](src/features/features.ts). The Google Form link is edited in [`src/data/externalLinks.ts`](src/data/externalLinks.ts).
-
 > [!TIP]
 > The project supports both npm and yarn. All examples use npm; for yarn, simply replace `npm run` with `yarn`.
 
@@ -30,7 +27,10 @@ The project exists in two different states, which are configured separately. Thi
     - Specify a link to it in the [`src/data/externalLinks.ts`](src/data/externalLinks.ts) file
 
 3. **Make sure collection mode is enabled**
-    - In the [`src/features/features.ts`](src/features/features.ts) file, check that the correct settings for the collection step are set.
+
+    ```bash
+    npm run stage -- 1
+    ```
 
 4. **Run locally to verify**
 
@@ -66,7 +66,10 @@ The project exists in two different states, which are configured separately. Thi
     ```
 
 2. **Make sure result display mode is enabled**
-    - In the [`src/features/features.ts`](src/features/features.ts), check that the correct settings are set.
+   
+    ```bash
+    npm run stage -- 3
+    ```
 
 3. **Run automatic processing**
 
@@ -115,9 +118,8 @@ npm run build
 npm run mock_auto
 
 # CSV generation only
-npm run mock_csv # default, 15 records
-npm run mock_csv:50 # 50 records
-npm run mock_csv:200 # 200 records
+npm run mock_csv        # default, 15 records
+npm run mock_csv -- N   # N records
 
 ```
 
