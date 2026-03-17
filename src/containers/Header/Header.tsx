@@ -26,9 +26,11 @@ const Header = () => {
           Твой номер уже сохранен на этой странице, но, <br/>
           на всякий случай, <u><b>сфотографируй</b></u> или <u><b>запиши его</b></u>
         </div>
-        <div>
-          <a className='tg' href={EXTERNAL_LINKS.tgAdmin} target='_blank'>группа в TG</a>
-        </div>
+        {EXTERNAL_LINKS.tgAdmin && (
+          <div>
+            <a className='tg' href={EXTERNAL_LINKS.tgAdmin} target='_blank'>группа в TG</a>
+          </div>
+        )}
       </div>
     </div>
   )
