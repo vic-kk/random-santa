@@ -65,13 +65,7 @@ The project exists in two different states, which are configured separately. Thi
     └─ ...
     ```
 
-2. **Make sure result display mode is enabled**
-   
-    ```bash
-    npm run stage -- 3
-    ```
-
-3. **Run automatic processing**
+2. **Run automatic processing**
 
     ```bash
     npm run santa_auto
@@ -81,9 +75,10 @@ The project exists in two different states, which are configured separately. Thi
     - Makes a backup of the old draw, if any
     - Runs a new draw based on `SANTA.csv`
     - Creates the file [`src/data/addresses.ts`](src/data/addresses.ts) with the results
+    - Switch the project to the "Results" mode (stage -- 3)
     - Builds the project for publication
 
-4. **Publish the results**
+3. **Publish the results**
     - The finished build from the `docs/` folder is published on GitHub Pages.
 
 ---
