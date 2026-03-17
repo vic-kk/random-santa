@@ -121,6 +121,18 @@ npm run mock_csv:200 # 200 records
 
 ```
 
+### Changing stages
+
+```bash
+# Selecting a stage via dialog and building for publishing
+npm run stage_auto
+
+# Only changing stages for a local test
+npm run stage       # Selecting a stage via dialog
+npm run stage -- N  # Explicitly specifying a stage (1 = build, 2 = service, 3 = results)
+
+```
+
 ## 📋 Command Reference (NPM/Yarn Scripts)
 
 | Command | Action | Typical Scenario |
@@ -131,23 +143,25 @@ npm run mock_csv:200 # 200 records
 | **`build`** | Builds the production version of the project. | Prepares for publication. |
 | **`mock_auto`** | Generates a test CSV file (15 records) and runs the draw. | Full-cycle testing. |
 | **`mock_csv[:N]`** | Generates only a test CSV file. | Creates data for debugging. |
+| **`stage_auto`** | Requests the current stage and collects for publishing. | Changes the publishing stage. |
+| **`stage[ -- N]`** | Sets the desired stage. | 1 = collecting, 2 = service, 3 = results |
 
 ---
 
 ## 📦 Project Structure
 
 ```shell
-├─📂 _local/              # service folder (in .gitignore)
-│  ├─ SANTA.csv             # raw data from Google Forms
-│  ├─📂 backups/           # backup copies of draws
-│  ├─📂 parced/            # processed data
+├─📂 _local/                # service folder (in .gitignore)
+│  ├─ SANTA.csv              # raw data from Google Forms
+│  ├─📂 backups/            # backup copies of draws
+│  ├─📂 parced/             # processed data
 │  └─ tip.txt
-├─📂 docs/                # compiled website for publication
+├─📂 docs/                  # compiled website for publication
 ├─📂 src/
 │  ├─📂 data/
 │  │  ├─ addresses.ts       # results of the current draw
 │  │  └─ externalLinks.ts   # links to External resources
 │  └─📂 features/
-│     └─ features.ts          # stage and function settings
+│     └─ features.ts        # stage and function settings
 └─ ...
 ```
