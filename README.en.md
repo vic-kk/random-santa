@@ -1,57 +1,89 @@
-# 🎁 Random Santa 
+# 🎁 Random Santa
 
-A project for automatically drawing Secret Santas based on responses from Google Forms.
+A project for automatically drawing Secret Santas based on Google Forms responses.
 
-## 🚀 Quick Start
+## 🔄 How it works: two stages in the project's life
 
-The main use case is to run the draw and publish the results.
+The project exists in two different states, which are configured separately. This allows for collecting participant data first and then conducting the drawing.
 
-0. **Installing Dependencies**
+> [!IMPORTANT]
+> Stage management is configured in the [`src/features/features.ts`](src/features/features.ts). The Google Form link is edited in [`src/data/externalLinks.ts`](src/data/externalLinks.ts).
+
+> [!TIP]
+> The project supports both npm and yarn. All examples use npm; for yarn, simply replace `npm run` with `yarn`.
+
+### 1️⃣ Step: Data Collection
+
+**🎯 Purpose:** To collect participant data using Google Form.
+
+#### 🚀 Quick Start for the Data Collection Step
+
+1. **Install dependencies**
+
     ```bash
     npm i
     ```
 
+2. **Configure a form link**
+    - Create a Google Form for data collection
+    - You can use UID prefilling (the example in the project uses it)
+    - Specify a link to it in the [`src/data/externalLinks.ts`](src/data/externalLinks.ts) file
+
+3. **Make sure collection mode is enabled**
+    - In the [`src/features/features.ts`](src/features/features.ts) file, check that the correct settings for the collection step are set.
+
+4. **Run locally to verify**
+
+    ```bash
+    npm run dev
+    ```
+
+5. **Build and publish the project**
+
+    ```bash
+    npm run build
+    ```
+
+    The completed build from the `docs/` folder is published on GitHub Pages.
+
+### 2️⃣ Stage: Draw and Results
+
+**🎯 Purpose:** Randomly match participants and show each one their recipient.
+
+#### 🚀 Quick Start for the Giveaway Stage
+
 1. **Prepare the Data**
-    * Export the responses from Google Forms to a file and rename it `SANTA.csv`.
-    * Place this file in the `_local/` folder in the root of the project.
+    - Export responses from Google Forms
+    - Rename the file to `SANTA.csv`
+    - Place it in the `_local/` folder in the project root
 
     ```shell
-    # Project structure after preparation:
-
+    Structure after preparation:
     ├─📂 _local/
-    │  ├─ SANTA.csv # your responses from Google Forms
-    │  └─ tip.txt
+    │ ├─ SANTA.csv # responses from Google Forms
+    │ └─ tip.txt
     └─ ...
     ```
 
-2. **Run automatic processing**
-      ```bash
-      npm run santa_auto
-      ```
+2. **Make sure result display mode is enabled**
+    - In the [`src/features/features.ts`](src/features/features.ts), check that the correct settings are set.
 
-> [!TIP]
-> The `santa_auto` command will perform the draw and immediately create a ready-to-publish project build for publishing on GitHub Pages.
+3. **Run automatic processing**
 
-```shell
-# All files and folders are generated automatically
-# Project structure after running the script:
+    ```bash
+    npm run santa_auto
+    ```
 
-├─📂 _local/
-│  ├─📂 backups/ # created automatically
-│  │  └─ addresses_2025....ts # backup of the early draw addresses.ts
-│  ├─📂 parced/
-│  │  └─ data.js # contents of SANTA.csv in JS array format.
-│  ├─ SANTA.csv
-│  └─ tip.txt
-├─📂 docs/ # compiled project for publishing on GitHub Pages
-├─📂 src/data
-│  └─ addresses.ts # project draw file
-└─ ...
-```
+    This command:
+    - Makes a backup of the old draw, if any
+    - Runs a new draw based on `SANTA.csv`
+    - Creates the file [`src/data/addresses.ts`](src/data/addresses.ts) with the results
+    - Builds the project for publication
 
-## ⚙️ Advanced Usage
+4. **Publish the results**
+    - The finished build from the `docs/` folder is published on GitHub Pages.
 
-These commands are useful for debugging, making changes, or running individual steps of a process.
+---
 
 ### 🔧 Manual Stage Management
 
@@ -69,37 +101,53 @@ npm run dev
 npm run build
 ```
 
-### 🧪 Generate test data
->[!WARNING]
->Warning! Generating test data will completely overwrite the _local/SANTA.csv file. Make sure to back up any important data.
+---
 
-For development and testing, you can generate a CSV file with fake participant data:
+## 🧪 For development and testing
+
+### Generating test data
+
+> [!WARNING]
+> Generating test data will completely overwrite the `_local/SANTA.csv` file. Make sure important data is saved.
 
 ```bash
-# Full cycle: generating 15 entries and drawing lots
+# Full cycle: generating 15 records + draw
 npm run mock_auto
+
+# CSV generation only
+npm run mock_csv # default, 15 records
+npm run mock_csv:50 # 50 records
+npm run mock_csv:200 # 200 records
+
 ```
 
-Separate file generation:
-
-```bash
-# Generating a CSV (default: 15 entries)
-npm run mock_csv
-
-# Generating a CSV with 50 entries
-npm run mock_csv:50
-
-# Generating a CSV with 200 entries
-npm run mock_csv:200
-```
-
-## 📋 Command Reference (NPM Scripts)
+## 📋 Command Reference (NPM/Yarn Scripts)
 
 | Command | Action | Typical Scenario |
 | :--- | :--- | :--- |
-| **`santa_auto`** | **🎯 Main command.** Runs the draw and build for publication. | Quick start for deployment. |
-| **`santa`** | Runs only the draw of recipients from `SANTA.csv`. | New draw. |
-| **`dev`** | Runs a local dev server for viewing. | Develop and debug the interface. |
-| **`build`** | Builds the production version of the project. | Prepare for publication. |
-| **`mock_auto`** | Generates a test CSV (15 records) and runs the draw. | Full-cycle testing. |
+| **`santa_auto`** | **🎯 Basic command.** Runs draw and build for publishing. | Quick start for deployment. |
+| **`santa`** | Runs only draw of recipients from `SANTA.csv`. | New draw. |
+| **`dev`** | Starts a local dev server for viewing. | Develops and debugs the interface. |
+| **`build`** | Builds the production version of the project. | Prepares for publication. |
+| **`mock_auto`** | Generates a test CSV file (15 records) and runs the draw. | Full-cycle testing. |
 | **`mock_csv[:N]`** | Generates only a test CSV file. | Creates data for debugging. |
+
+---
+
+## 📦 Project Structure
+
+```shell
+├─📂 _local/              # service folder (in .gitignore)
+│  ├─ SANTA.csv             # raw data from Google Forms
+│  ├─📂 backups/           # backup copies of draws
+│  ├─📂 parced/            # processed data
+│  └─ tip.txt
+├─📂 docs/                # compiled website for publication
+├─📂 src/
+│  ├─📂 data/
+│  │  ├─ addresses.ts       # results of the current draw
+│  │  └─ externalLinks.ts   # links to External resources
+│  └─📂 features/
+│     └─ features.ts          # stage and function settings
+└─ ...
+```
