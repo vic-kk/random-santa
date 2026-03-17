@@ -9,7 +9,7 @@ interface RecipientLineProps {
   value: string;
 }
 
-const LINKS: Links = {
+const MARKET_LINKS: Links = {
   ozon_address: 'https://www.ozon.ru/',
   wb_address: 'https://www.wildberries.ru/',
 }
@@ -21,13 +21,12 @@ const TITLES: DeliveryData = {
   wb_address: 'WB',
 }
 
-function isLinkKey(key: keyof DeliveryData): key is keyof Links {
-  return key in LINKS;
+function isMarketKey(key: keyof DeliveryData): key is keyof Links {
+  return key in MARKET_LINKS;
 }
 
 const RecipientLine = ({ value, field }: RecipientLineProps) => {
-  const isDeliveryLink = isLinkKey(field);
-  const deliveryClass = isDeliveryLink ? field : '';
+  const isDeliveryLink = isMarketKey(field);
 
   return (
     <div className='recipient-line'>
@@ -38,8 +37,8 @@ const RecipientLine = ({ value, field }: RecipientLineProps) => {
 
         {isDeliveryLink && (
           <a
-            className={deliveryClass}
-            href={LINKS[field]}
+            className={field}
+            href={MARKET_LINKS[field]}
             title={`Перейти на сайт ${TITLES[field]}`}
             target='_blank'
           >

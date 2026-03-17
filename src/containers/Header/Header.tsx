@@ -1,5 +1,5 @@
 import santaLogo from '/santa-250.webp'
-import { URLS } from 'src/data';
+import { EXTERNAL_LINKS } from 'src/data';
 import { CopyToClipboard } from 'src/containers';
 import { useSantaId } from 'src/hooks';
 import './Header.css'
@@ -27,7 +27,7 @@ const Header = () => {
           на всякий случай, <u><b>сфотографируй</b></u> или <u><b>запиши его</b></u>
         </div>
         <div>
-          <a className='tg' href={URLS.tgAdmin} target='_blank'>группа в TG</a>
+          <a className='tg' href={EXTERNAL_LINKS.tgAdmin} target='_blank'>группа в TG</a>
         </div>
       </div>
     </div>
