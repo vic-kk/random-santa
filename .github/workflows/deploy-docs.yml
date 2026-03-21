@@ -1,46 +1,81 @@
-name: Deploy Docs on Change
+name: Build and Deploy
 
 on:
   push:
-    branches:
-      - main # или main
-    # Запускать workflow ТОЛЬКО если изменения есть в этих путях
+    branches: [main]
+    # 1. Автоматическая сборка при изменении features.ts
     paths:
-      - 'docs/**'
-      - '.github/workflows/deploy-docs.yml' # Страховка, чтобы обновление самого workflow тоже триггерило деплой
-
-  # Allows you to run this workflow manually from the Actions tab
+      - 'src/features/features.ts'
+    # 2. Сборка по тегу (для обновления интерфейса, компонентов и т.д.)
+    tags:
+      - 'v*'           # v1.0.0, v2.0.0 и т.д.
+      - 'deploy'       # простой тег deploy
+  
+  # 3. Ручной запуск с выбором этапа (из интерфейса GitHub)
   workflow_dispatch:
+    inputs:
+      stage:
+        description: 'Выберите этап (1 - Сбор / 2 - Сервис / 3 - Результаты)'
+        required: true
+        default: '2'
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build-and-deploy:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
+      
+      # Ручной запуск: меняем stage и коммитим
+      - name: Set stage from manual trigger
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Setting stage to: ${{ inputs.stage }}"
+          npm run stage -- ${{ inputs.stage }}
+          
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add src/features/features.ts
+          git diff --staged --quiet || git commit -m "chore: set stage to ${{ inputs.stage }} [skip ci]"
+          git push
+      
+      # Сборка проекта (для всех случаев)
+      - name: Build project
+        run: npm run build
+      
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
           path: './docs'
+      
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
