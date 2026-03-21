@@ -9,11 +9,10 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "santa": "node node_scripts/santa_resort.mjs",
-    "santa_auto": "npm run santa && npm run stage -- 3 && npm run build",
-    "mock_csv": "node node_scripts/generate_mock_csv.mjs",
-    "mock_auto": "npm run mock_csv && npm run santa",
+    "santa_auto": "npm run stage -- 3 && npm run santa",
     "stage": "node node_scripts/set_stage.mjs",
-    "stage_auto": "npm run stage && npm run build"
+    "mock_csv": "node node_scripts/generate_mock_csv.mjs",
+    "mock_auto": "npm run mock_csv && npm run santa"
   },
   "dependencies": {
     "react": "^19.2.4",
