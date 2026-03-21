@@ -6,6 +6,7 @@ on:
     # 1. Automatic build when features.ts changes
     paths:
       - 'src/features/features.ts'
+      - 'src/data/externalLinks.ts'
     # 2. Build by tag (for updating the interface, components, etc.)
     tags:
       - 'v*'           # v1.0.0, v2.0.0 и т.д.
