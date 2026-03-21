@@ -16,14 +16,14 @@ on:
   workflow_dispatch:
     inputs:
       stage:
-        description: 'Выберите этап (1 - Сбор / 2 - Сервис / 3 - Результаты)'
+        description: 'Выберите этап'
         required: true
-        default: '2'
+        default: '🛠️ In service'
         type: choice
         options:
-          - '1'
-          - '2'
-          - '3'
+          - '📝 Data collection'
+          - '🛠️ In service'
+          - '🎁 Results'
 
 permissions:
   contents: write
@@ -61,14 +61,24 @@ jobs:
       - name: Set stage ${{ inputs.stage }} from manual trigger
         if: github.event_name == 'workflow_dispatch'
         run: |
-          echo "Setting stage to: ${{ inputs.stage }}"
+          case "${{ inputs.stage }}" in
+            '📝 Data collection')
+              STAGE_NUM=1
+              ;;
+            '🛠️ In service')
+              STAGE_NUM=2
+              ;;
+            '🎁 Results')
+              STAGE_NUM=3
+              ;;
+          esac
 
-          npm run stage -- ${{ inputs.stage }}
+          npm run stage -- $STAGE_NUM
           
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add src/features/features.ts
-          git diff --staged --quiet || git commit -m "chore: set stage to ${{ inputs.stage }} [skip ci]"
+          git diff --staged --quiet || git commit -m "chore: set stage to $STAGE_NUM [skip ci]"
           git push
       
       # Build up
