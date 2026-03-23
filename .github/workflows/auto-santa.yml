@@ -1,4 +1,4 @@
-name: Auto Santa Draw
+name: Export CSV and Santa Draw
 
 on:
   workflow_dispatch:
@@ -95,7 +95,7 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add src/features/features.ts
-          git diff --staged --quiet || git commit -m "chore: set stage to 2 after auto-draw [skip ci]"
+          git diff --staged --quiet || git commit -m "chore: auto-draw on exported csv, set stage to '🛠️ In service' [skip ci]"
           git push
 
       - name: Build project
