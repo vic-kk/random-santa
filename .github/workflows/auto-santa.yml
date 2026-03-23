@@ -1,0 +1,119 @@
+name: Auto Santa Draw
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Подтверждение запуска жеребьевки'
+        required: true
+        type: choice
+        default: 'no'
+        options:
+          - 'yes'
+          - 'no'
+  
+  # Опционально: автоматический запуск по расписанию (например, каждый день в 10:00)
+  # schedule:
+  #   - cron: '0 10 * * *'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "santa-draw"
+  cancel-in-progress: false
+
+jobs:
+  fetch-and-draw:
+    if: inputs.confirm == 'yes' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create _local directory
+        run: mkdir -p _local
+
+      - name: Download CSV from secret URL
+        env:
+          CSV_URL: ${{ secrets.CSV_SOURCE_URL }}
+        run: |
+          if [ -z "$CSV_URL" ]; then
+            echo "❌ Ошибка: секрет CSV_SOURCE_URL не настроен"
+            echo "Добавьте его в Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+          
+          echo "📥 Загрузка CSV из: $CSV_URL"
+          
+          # Скачиваем файл
+          curl -L -o _local/SANTA.csv "$CSV_URL"
+          
+          # Проверяем, что файл загрузился и не пустой
+          if [ ! -s _local/SANTA.csv ]; then
+            echo "❌ Файл не загрузился или пуст"
+            exit 1
+          fi
+          
+          echo "✅ Файл загружен"
+          echo "📊 Количество строк: $(wc -l < _local/SANTA.csv)"
+          echo "📋 Первые 3 строки:"
+          head -3 _local/SANTA.csv
+
+      - name: Run Santa draw
+        run: npm run santa
+
+      - name: Verify addresses.ts was generated
+        run: |
+          if [ ! -f src/data/addresses.ts ]; then
+            echo "❌ addresses.ts не был сгенерирован"
+            echo "Проверьте формат CSV и скрипт santa"
+            exit 1
+          fi
+          echo "✅ addresses.ts сгенерирован"
+
+      - name: Set stage to Results
+        run: |
+          npm run stage -- 2
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add src/features/features.ts
+          git diff --staged --quiet || git commit -m "chore: set stage to 2 after auto-draw [skip ci]"
+          git push
+
+      - name: Build project
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './docs'
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+
+      - name: Commit and push addresses.ts
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add src/data/addresses.ts
+          git diff --staged --quiet || git commit -m "chore: update addresses.ts with new draw results [skip ci]"
+          git push
