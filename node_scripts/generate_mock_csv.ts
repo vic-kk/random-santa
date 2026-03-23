@@ -6,7 +6,7 @@ import { writeFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { TaskManager, logger } from './core/logger.ts';
-import { stringifyCSV } from './core/csv-parser.ts';
+import { stringifyCyrillicCSV } from './core/csv-parser.ts';
 import type { RawParticipant } from './core/types.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename);
 
 const CSV_PATH = path.resolve(__dirname, '../_local/SANTA.csv');
 
-// Конфигурация (можно вынести позже)
+// Конфигурация
 const CONFIG = {
   defaultCount: 15,
   batchSize: 1000,
@@ -133,7 +133,7 @@ async function main(): Promise<void> {
 
     for (let i = 0; i < rowCount; i++) {
       participants.push(generateParticipant(existingNumbers));
-      
+
       if ((i + 1) % CONFIG.batchSize === 0 || i === rowCount - 1) {
         const percent = Math.round(((i + 1) / rowCount) * 100);
         manager.updateDetails(1, `📊 ${formatNumber(i + 1)}/${formatNumber(rowCount)} (${percent}%)`);
@@ -157,16 +157,8 @@ async function main(): Promise<void> {
       };
     });
 
-    // Шаг 4: Сохранение
-    const csvContent = stringifyCSV(participants, [
-      'timestamp',
-      'id',
-      'gender',
-      'wishes',
-      'ozon_address',
-      'wb_address'
-    ]);
-
+    // Шаг 4: Сохранение в кириллическом формате RFC 4180
+    const csvContent = stringifyCyrillicCSV(participants);
     writeFileSync(CSV_PATH, csvContent, 'utf8');
 
     await manager.runTask(3, async () => {
@@ -178,7 +170,7 @@ async function main(): Promise<void> {
       const preview = participants.slice(0, 3).map(p => 
         `${p.id} | ${p.gender} | ${p.wishes.slice(0, 30)}...`
       ).join('\n');
-      
+
       return { details: `\n📋 Первые 3:\n${preview}` };
     });
 

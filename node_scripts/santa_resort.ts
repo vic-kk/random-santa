@@ -7,7 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import type { RawParticipant, AssignedParticipant } from './core/types.ts';
 import { TaskManager } from './core/logger.ts';
-import { parseCSV } from './core/csv-parser.ts';
+import { parseCyrillicCSV } from './core/csv-parser.ts';
 import { reSortNoShift } from './core/draw-algorithm.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,7 +28,7 @@ async function createBackup(): Promise<{ details: string }> {
     await fs.access(PATHS.addresses);
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').replace('T', '_');
     const backupPath = path.join(PATHS.backupDir, `addresses_${timestamp}.ts`);
-    
+
     await fs.mkdir(PATHS.backupDir, { recursive: true });
     await fs.copyFile(PATHS.addresses, backupPath);
     return { details: `\n\t📁 ${path.basename(backupPath)}` };
@@ -77,15 +77,13 @@ ${Array.from(assignments.entries()).map(([santa, giftee]) => {
 // 3. СОХРАНЕНИЕ ФАЙЛА addresses.ts
 // ============================================
 async function generateAddressesFile(
-  participants: RawParticipant[],                              // исходные данные (для гендера Санты)
-  participantsWithGiftee: AssignedParticipant[],               // данные получателей
+  participants: RawParticipant[],
+  participantsWithGiftee: AssignedParticipant[],
   assignments: Map<string, string>
 ): Promise<{ details: string }> {
   const previewEntries = Array.from(assignments.entries()).slice(0, 20);
   const preview = previewEntries.map(([santa, giftee]) => {
-    // ✅ Санту ищем в исходных данных (там правильный гендер)
     const santaData = participants.find(p => p.id === santa);
-    // ✅ Получателя ищем в participantsWithGiftee (там данные получателя)
     const gifteeData = participantsWithGiftee.find(p => p.id === giftee);
     return `  ${santa} → ${giftee} (${santaData?.gender} → ${gifteeData?.gender})`;
   }).join('\n');
@@ -138,10 +136,15 @@ async function main() {
     });
 
     // Шаг 2: Парсинг CSV
-    const { parsedData } = await manager.runTask(1, async () => {
-      const { data } = await parseCSV<RawParticipant>(PATHS.csv);
+    const parsedData = await manager.runTask(1, async () => {
+      const data = await parseCyrillicCSV(PATHS.csv);
       if (data.length === 0) {
         throw new Error('❌ CSV файл пуст');
+      }
+      // Проверка на пустые ID
+      const emptyIds = data.filter(p => !p.id);
+      if (emptyIds.length > 0) {
+        throw new Error(`❌ Найдены участники без ID: ${emptyIds.length} записей`);
       }
       return { 
         parsedData: data,
@@ -151,7 +154,7 @@ async function main() {
 
     // Шаг 3: Жеребьёвка
     const drawResult = await manager.runTask(2, async () => {
-      const result = reSortNoShift(parsedData);
+      const result = reSortNoShift(parsedData.parsedData);
       return { 
         ...result,
         details: `\n\t⚡ ${result.duration.toFixed(2)} мс 🎲 попыток: ${result.attempts}`
@@ -160,24 +163,27 @@ async function main() {
 
     // Шаг 4: Сохранение parsed файла
     await manager.runTask(3, async () => {
-      return await generateParsedFile(parsedData, drawResult.assignments);
+      return await generateParsedFile(parsedData.parsedData, drawResult.assignments);
     });
 
-    // Шаг 5: Генерация addresses.ts (с передачей исходных данных для гендера Санты)
+    // Шаг 5: Генерация addresses.ts
     await manager.runTask(4, async () => {
-      return await generateAddressesFile(parsedData, drawResult.participantsWithGiftee, drawResult.assignments);
+      return await generateAddressesFile(
+        parsedData.parsedData, 
+        drawResult.participantsWithGiftee, 
+        drawResult.assignments
+      );
     });
 
     // Шаг 6: Превью
     await manager.runTask(5, async () => {
-      const previewCount = Math.min(3, parsedData.length);
-      let previewText = `\n\t🎁 Участников обработано: \x1b[32m${parsedData.length}\x1b[0m\n`;
-      
+      const previewCount = Math.min(3, parsedData.parsedData.length);
+      let previewText = `\n\t🎁 Участников обработано: \x1b[32m${parsedData.parsedData.length}\x1b[0m\n`;
+
       for (let i = 0; i < previewCount; i++) {
         const p = drawResult.participantsWithGiftee[i];
-        // ✅ Для превью тоже используем исходные данные для Санты
-        const santaData = parsedData.find(d => d.id === p.id_santa);
-        const gifteeData = parsedData.find(d => d.id === drawResult.assignments.get(p.id_santa));
+        const santaData = parsedData.parsedData.find(d => d.id === p.id_santa);
+        const gifteeData = parsedData.parsedData.find(d => d.id === drawResult.assignments.get(p.id_santa));
         previewText += `\t${p.id_santa} → ${gifteeData?.id} (${santaData?.gender} → ${gifteeData?.gender})\n`;
       }
 
