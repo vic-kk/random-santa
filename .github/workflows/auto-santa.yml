@@ -11,10 +11,6 @@ on:
         options:
           - 'yes'
           - 'no'
-  
-  # Опционально: автоматический запуск по расписанию (например, каждый день в 10:00)
-  # schedule:
-  #   - cron: '0 10 * * *'
 
 permissions:
   contents: write
@@ -29,20 +25,21 @@ jobs:
   fetch-and-draw:
     if: inputs.confirm == 'yes' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
-    
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: true
           fetch-depth: 0
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: |
           rm -rf node_modules package-lock.json
@@ -51,51 +48,68 @@ jobs:
       - name: Create _local directory
         run: mkdir -p _local
 
-      - name: Download CSV from secret URL
+      - name: Build CSV URL from sheet ID
         env:
-          CSV_URL: ${{ secrets.CSV_SOURCE_URL }}
+          CSV_SHEET_ID: ${{ secrets.CSV_SHEET_ID }}
         run: |
-          if [ -z "$CSV_URL" ]; then
-            echo "❌ Ошибка: секрет CSV_SOURCE_URL не настроен"
+          if [ -z "$CSV_SHEET_ID" ]; then
+            echo "❌ Ошибка: секрет CSV_SHEET_ID не настроен"
             echo "Добавьте его в Settings → Secrets and variables → Actions"
+            echo "Пример: 11j1Ttbj.......0AJbjU"
             exit 1
           fi
           
+          CSV_URL="https://docs.google.com/spreadsheets/d/${CSV_SHEET_ID}/export?format=csv"
+          echo "CSV_URL=$CSV_URL" >> $GITHUB_ENV
+          echo "✅ URL собран"
+
+      - name: Download CSV from Google Sheets
+        env:
+          CSV_URL: ${{ env.CSV_URL }}
+        run: |
           echo "📥 Загрузка CSV из: $CSV_URL"
-          
-          # Скачиваем файл
-          curl -L -o _local/SANTA.csv "$CSV_URL"
-          
+
+          # Скачиваем файл с таймаутом 30 секунд
+          HTTP_CODE=$(curl -L -o _local/SANTA.csv -w "%{http_code}" --max-time 30 "$CSV_URL")
+
+          echo "📊 HTTP статус: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "❌ ОШИБКА: Не удалось загрузить файл. HTTP статус: $HTTP_CODE"
+            echo "Проверьте:"
+            echo "- Доступна ли таблица по ссылке?"
+            echo "- Правильно ли настроен секрет CSV_SHEET_ID?"
+            exit 1
+          fi
+
           # Проверяем, что файл загрузился и не пустой
           if [ ! -s _local/SANTA.csv ]; then
             echo "❌ Файл не загрузился или пуст"
             exit 1
           fi
-          
+
           echo "✅ Файл загружен"
           echo "📊 Количество строк: $(wc -l < _local/SANTA.csv)"
-          echo "📋 Первые 3 строки:"
-          head -3 _local/SANTA.csv
+          echo "📋 Первая строка:"
+          head -1 _local/SANTA.csv
 
       - name: Run Santa draw
         run: npm run santa
 
       - name: Verify addresses.ts was generated
         run: |
-          if [ ! -f src/data/addresses.ts ]; then
-            echo "❌ addresses.ts не был сгенерирован"
-            echo "Проверьте формат CSV и скрипт santa"
+          if [ ! -s src/data/addresses.ts ]; then
+            echo "❌ addresses.ts не сгенерирован"
             exit 1
           fi
-          echo "✅ addresses.ts сгенерирован"
 
-      - name: Set stage to Results
+      - name: Set stage and commit changes
         run: |
           npm run stage -- 2
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add src/features/features.ts
-          git diff --staged --quiet || git commit -m "chore: auto-draw on exported csv, set stage to '🛠️ In service' [skip ci]"
+          git add src/features/features.ts src/data/addresses.ts
+          git diff --staged --quiet || git commit -m "chore: auto-draw results, set stage to service. reason: csv export [skip ci]"
           git push
 
       - name: Build project
@@ -111,11 +125,3 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-
-      - name: Commit and push addresses.ts
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add src/data/addresses.ts
-          git diff --staged --quiet || git commit -m "chore: update addresses.ts with new draw results [skip ci]"
-          git push
