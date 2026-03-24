@@ -20,27 +20,6 @@ on:
     tags:
       - 'v*'           # v1.0.0, v2.0.0 и т.д.
       - 'deploy'       # простой тег deploy
-  
-  # 3. Manual start (simple rebuild without stage change)
-  workflow_dispatch:
-  
-  workflow_call:
-    inputs:
-      build-command:
-        description: 'Команда для сборки проекта'
-        required: false
-        default: 'npm run build'
-        type: string
-      deploy-branch:
-        description: 'Ветка для деплоя на GitHub Pages'
-        required: false
-        default: 'main'
-        type: string
-      upload-path:
-        description: 'Путь к артефактам для загрузки'
-        required: false
-        default: './docs'
-        type: string
 
 permissions:
   contents: write
@@ -82,8 +61,9 @@ jobs:
           rm -rf node_modules package-lock.json
           npm install
       
+      # Build up
       - name: Build project
-        run: ${{ inputs.build-command }}
+        run: npm run build
       
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -91,7 +71,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ inputs.upload-path }}
+          path: './docs'
       
       - name: Deploy to GitHub Pages
         id: deployment
