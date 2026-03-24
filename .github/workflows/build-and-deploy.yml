@@ -3,20 +3,18 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
-    # 1. Automatic build when source files change
     paths:
       - 'src/**/*'
       - 'public/**/*'
       - 'vite.config.ts'
       - 'package.json'
       - 'package-lock.json'
-      # Исключаем документацию и служебные файлы
+      # exclude files and folders
       - '!**.md'
       - '!**.txt'
       - '!**.gitignore'
       - '!.github/**/*'
       - '!_local/**/*'
-    # 2. Build by tag (for updating the interface, components, etc.)
     tags:
       - 'v*'           # v1.0.0, v2.0.0 и т.д.
       - 'deploy'       # простой тег deploy
@@ -29,7 +27,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "build-pages"
   cancel-in-progress: false
 
 jobs:
@@ -83,9 +81,10 @@ jobs:
         uses: actions/deploy-pages@v4
 
   # Collect logs
-  # upload-error-logs-on-failure:
-  #   uses: ./.github/workflows/upload-error-logs.yml
-  #   with:
-  #     artifact-name: change-stage-error-logs
-  #     log-path: |
-  #        src/features/features.ts
+  upload-error-logs-on-failure:
+    needs: build-and-deploy
+    uses: ./.github/workflows/upload-error-logs.yml
+    with:
+      artifact-name: change-stage-error-logs
+      log-path: |
+         src/features/features.ts
