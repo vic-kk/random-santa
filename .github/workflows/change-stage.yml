@@ -21,7 +21,6 @@ on:
         type: string
       need-update:
         required: false
-        default: false
         type: boolean
 
 permissions:
@@ -47,7 +46,7 @@ jobs:
           fetch-depth: 0
 
       - name: Pull latest
-        if: inputs.need-update == true
+        if: ${{ inputs.need-update }}
         run: git pull origin main
       
       - name: Setup Node.js
