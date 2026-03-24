@@ -84,9 +84,9 @@ jobs:
     uses: ./.github/workflows/build-and-deploy.yml
 
   # Collect logs
-  upload-error-logs-on-failure:
-    uses: ./.github/workflows/upload-error-logs.yml
-    with:
-      artifact-name: change-stage-error-logs
-      log-path: |
-         src/features/features.ts
+  # upload-error-logs-on-failure:
+  #   uses: ./.github/workflows/upload-error-logs.yml
+  #   with:
+  #     artifact-name: change-stage-error-logs
+  #     log-path: |
+  #        src/features/features.ts
