@@ -21,6 +21,8 @@ on:
       - 'v*'           # v1.0.0, v2.0.0 и т.д.
       - 'deploy'       # простой тег deploy
 
+  workflow_dispatch:
+
 permissions:
   contents: write
   pages: write
@@ -31,7 +33,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
