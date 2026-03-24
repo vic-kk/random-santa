@@ -1,0 +1,105 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+    # 1. Automatic build when source files change
+    paths:
+      - 'src/**/*'
+      - 'public/**/*'
+      - 'vite.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      # Исключаем документацию и служебные файлы
+      - '!**.md'
+      - '!**.txt'
+      - '!**.gitignore'
+      - '!.github/**/*'
+      - '!_local/**/*'
+    # 2. Build by tag (for updating the interface, components, etc.)
+    tags:
+      - 'v*'           # v1.0.0, v2.0.0 и т.д.
+      - 'deploy'       # простой тег deploy
+  
+  # 3. Manual start (simple rebuild without stage change)
+  workflow_dispatch:
+  
+  workflow_call:
+    inputs:
+      build-command:
+        description: 'Команда для сборки проекта'
+        required: false
+        default: 'npm run build'
+        type: string
+      deploy-branch:
+        description: 'Ветка для деплоя на GitHub Pages'
+        required: false
+        default: 'main'
+        type: string
+      upload-path:
+        description: 'Путь к артефактам для загрузки'
+        required: false
+        default: './docs'
+        type: string
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      # Skip deploy for draft commits
+      - name: Check for skip deploy flag
+        if: contains(github.event.head_commit.message, '[skip deploy]')
+        run: |
+          echo "⏭️ Skipping deploy due to [skip deploy] flag in commit message"
+          exit 0
+      
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
+      
+      - name: Build project
+        run: ${{ inputs.build-command }}
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ inputs.upload-path }}
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Upload error logs on failure
+        uses: ./.github/workflows/upload-error-logs.yml
+        with:
+          artifact-name: build-error-logs
+          log-path: |
+            docs/

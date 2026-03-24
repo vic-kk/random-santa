@@ -4,13 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       confirm:
-        description: 'Подтверждение запуска жеребьевки'
+        description: 'Подтверждение запуска жеребьевки. Выберите Финальный этап этап.'
         required: true
         type: choice
         default: 'no'
         options:
-          - 'yes'
           - 'no'
+          - '🛠️ In service'
+          - '🎁 Results'
 
 permissions:
   contents: write
@@ -23,8 +24,9 @@ concurrency:
 
 jobs:
   fetch-and-draw:
-    if: inputs.confirm == 'yes' || github.event_name == 'schedule'
+    if: inputs.confirm != 'no'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
@@ -55,7 +57,7 @@ jobs:
           if [ -z "$CSV_SHEET_ID" ]; then
             echo "❌ Ошибка: секрет CSV_SHEET_ID не настроен"
             echo "Добавьте его в Settings → Secrets and variables → Actions"
-            echo "Пример: 11j1Ttbj.......0AJbjU"
+            echo "Пример: LEm11j1Ttbj.......0AJbjU"
             exit 1
           fi
           
@@ -88,6 +90,14 @@ jobs:
             exit 1
           fi
 
+          # Проверяем, что это действительно CSV
+          if ! head -1 _local/SANTA.csv | grep -q ","; then
+            echo "❌ Файл не похож на CSV"
+            echo "📋 Содержимое файла:"
+            cat _local/SANTA.csv
+            exit 1
+          fi
+
           echo "✅ Файл загружен"
           echo "📊 Количество строк: $(wc -l < _local/SANTA.csv)"
           echo "📋 Первая строка:"
@@ -103,25 +113,26 @@ jobs:
             exit 1
           fi
 
-      - name: Set stage and commit changes
+      - name: Commit addresses.ts
         run: |
-          npm run stage -- 2
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add src/features/features.ts src/data/addresses.ts
-          git diff --staged --quiet || git commit -m "chore: auto-draw results, set stage to service. reason: csv export [skip ci]"
-          git push
+          git add src/data/addresses.ts
+          git diff --staged --quiet || git commit -m "chore: csv export and auto-draw results [skip ci]"
+          git push || {
+            echo "❌ Не удалось отправить изменения"
+            exit 1
+          }
 
-      - name: Build project
-        run: npm run build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Change stage and deploy
+        uses: ./.github/workflows/change-stage.yml
         with:
-          path: './docs'
+          stage: ${{ inputs.confirm }}  # Устанавливаем стадию 2 или 3
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+      - name: Upload error logs on failure
+        uses: ./.github/workflows/upload-error-logs.yml
+        with:
+          artifact-name: auto-santa-error-logs
+          log-path: |
+            _local/SANTA.csv
+            src/data/addresses.ts

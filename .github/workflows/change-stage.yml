@@ -1,18 +1,6 @@
-name: Build and Deploy
+name: Change Stage
 
 on:
-  push:
-    branches: [main]
-    # 1. Automatic build when features.ts changes
-    paths:
-      - 'src/features/features.ts'
-      - 'src/data/externalLinks.ts'
-    # 2. Build by tag (for updating the interface, components, etc.)
-    tags:
-      - 'v*'           # v1.0.0, v2.0.0 и т.д.
-      - 'deploy'       # простой тег deploy
-  
-  # 3. Manual start with stage selection (from the GitHub interface)
   workflow_dispatch:
     inputs:
       stage:
@@ -24,6 +12,14 @@ on:
           - '📝 Data collection'
           - '🛠️ In service'
           - '🎁 Results'
+  
+  workflow_call:
+    inputs:
+      stage:
+        description: 'Этап для автоматической установки'
+        required: false
+        default: '🛠️ In service'
+        type: string
 
 permissions:
   contents: write
@@ -35,8 +31,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  change-stage:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
@@ -59,7 +56,6 @@ jobs:
       
       # Manual staging
       - name: Set stage ${{ inputs.stage }} from manual trigger
-        if: github.event_name == 'workflow_dispatch'
         run: |
           case "${{ inputs.stage }}" in
             '📝 Data collection')
@@ -82,17 +78,13 @@ jobs:
           git push
       
       # Build up
-      - name: Build project
-        run: npm run build
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Build and Deploy
+        uses: ./.github/workflows/build-and-deploy.yml
+
+      # Collect logs
+      - name: Upload error logs on failure
+        uses: ./.github/workflows/upload-error-logs.yml
         with:
-          path: './docs'
-      
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          artifact-name: change-stage-error-logs
+          log-path: |
+            src/features/features.ts

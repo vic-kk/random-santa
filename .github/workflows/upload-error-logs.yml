@@ -1,0 +1,27 @@
+name: Upload Error Logs
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: 'Название артефакта'
+        required: true
+        type: string
+      log-path:
+        description: 'Путь к логам'
+        required: true
+        type: string
+
+jobs:
+  upload-logs:
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Upload error logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.log-path }}

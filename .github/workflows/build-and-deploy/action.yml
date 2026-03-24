@@ -1,0 +1,10 @@
+name: 'Build and Deploy'
+description: 'Reusable workflow for building and deploying project to GitHub Pages'
+runs:
+  using: "composite"
+  steps:
+    - name: Build and Deploy
+      shell: bash
+      run: |
+        echo "This is a reusable workflow. Use it with:"
+        echo "uses: ./.github/workflows/build-and-deploy.yml"
