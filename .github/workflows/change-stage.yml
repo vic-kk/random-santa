@@ -77,6 +77,8 @@ jobs:
 
           npm run stage -- $STAGE_NUM
           
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
           git add src/features/features.ts
           git diff --staged --quiet || git commit -m "chore: set stage to '${{ inputs.stage }}' [skip ci]"
           git push origin main
