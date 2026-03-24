@@ -20,6 +20,11 @@ on:
       - 'deploy'       # простой тег deploy
   workflow_dispatch:
   workflow_call:
+    inputs:
+      need-update:
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -52,6 +57,10 @@ jobs:
         with:
           persist-credentials: true
           fetch-depth: 0
+      
+      - name: Pull latest
+        if: inputs.need-update == true
+        run: git pull origin main
       
       - name: Setup Node.js
         uses: actions/setup-node@v4

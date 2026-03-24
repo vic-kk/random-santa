@@ -131,6 +131,7 @@ jobs:
     uses: ./.github/workflows/change-stage.yml
     with:
       stage: ${{ inputs.confirm }}  # set stage to 2 or 3
+      need-update: true
 
   upload-error-logs-on-failure:
     needs: fetch-and-draw
