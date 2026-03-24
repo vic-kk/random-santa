@@ -124,15 +124,15 @@ jobs:
             exit 1
           }
 
-      - name: Change stage and deploy
-        uses: ./.github/workflows/change-stage.yml
-        with:
-          stage: ${{ inputs.confirm }}  # Устанавливаем стадию 2 или 3
+      #- name: Change stage and deploy
+      #  uses: ./.github/workflows/change-stage.yml
+      #  with:
+      #    stage: ${{ inputs.confirm }}  # Устанавливаем стадию 2 или 3
 
-      - name: Upload error logs on failure
-        uses: ./.github/workflows/upload-error-logs.yml
-        with:
-          artifact-name: auto-santa-error-logs
-          log-path: |
-            _local/SANTA.csv
-            src/data/addresses.ts
+      #- name: Upload error logs on failure
+      #  uses: ./.github/workflows/upload-error-logs.yml
+      #  with:
+      #    artifact-name: auto-santa-error-logs
+      #    log-path: |
+      #      _local/SANTA.csv
+      #      src/data/addresses.ts
