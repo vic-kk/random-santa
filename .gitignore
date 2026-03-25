@@ -1,4 +1,6 @@
-_local/*
+.context
+
+_local/**/*
 !_local/tip.txt
 
 # Logs
