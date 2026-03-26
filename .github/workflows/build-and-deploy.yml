@@ -72,6 +72,10 @@ jobs:
           rm -rf node_modules package-lock.json
           npm install
       
+      # Lint check
+      - name: Run ESLint
+        run: npm run lint
+      
       # Build up
       - name: Build project
         run: npm run build
