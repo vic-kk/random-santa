@@ -1,11 +1,13 @@
 import santaLogo from '/santa-250.webp'
-import { EXTERNAL_LINKS } from 'src/data';
+import { EXTERNAL_LINKS, TLinkItem } from 'src/data';
 import { CopyToClipboard } from 'src/containers';
 import { useSantaId } from 'src/hooks';
 import './Header.css'
 
 const Header = () => {
   const uid = useSantaId();
+
+  const { url, text } = EXTERNAL_LINKS.get('community') as TLinkItem;
 
   return (
     <div className='santa-header'>
@@ -26,9 +28,9 @@ const Header = () => {
           Твой номер уже сохранен на этой странице, но, <br/>
           на всякий случай, <u><b>сфотографируй</b></u> или <u><b>запиши его</b></u>
         </div>
-        {EXTERNAL_LINKS.tgAdmin && (
+        {url && (
           <div>
-            <a className='tg' href={EXTERNAL_LINKS.tgAdmin} target='_blank'>группа в TG</a>
+            <a className='tg' href={url} target='_blank' title={text}>{text}</a>
           </div>
         )}
       </div>
