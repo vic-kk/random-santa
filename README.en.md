@@ -1,164 +1,208 @@
-# 🎁 Random Santa
+# 🎅 Random Santa
 
-A project for automatically drawing Secret Santas based on Google Forms responses.
+> Automatic "Secret Santa" draw with Google Forms/Sheets integration and auto-deploy to GitHub Pages
 
-## 🔄 How it works: two stages in the project's life
+[![Build and Deploy](https://github.com/vic-kk/random-santa/actions/workflows/build-and-deploy.yml/badge.svg)](https://github.com/vic-kk/random-santa/actions/workflows/build-and-deploy.yml)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/vic-kk/random-santa)
 
-The project exists in two different states, which are configured separately. This allows for collecting participant data first and then conducting the drawing.
+The project solves the main problem of a "Secret Santa" organizer: data collection, preventing self-selection, fair distribution, and publishing results — all in one place with minimal manual work.
 
-> [!TIP]
-> The project supports both npm and yarn. All examples use npm; for yarn, simply replace `npm run` with `yarn`.
+**🚀 Live example:** [vic-kk.github.io/random-santa](https://vic-kk.github.io/random-santa/)
 
-### 1️⃣ Step: Data Collection
+## 📑 Table of Contents
 
-**🎯 Purpose:** To collect participant data using Google Form.
+- [⚡ Quick Start](#-quick-start)
+- [📜 Scripts](#-scripts)
+- [✨ Features](#-features)
+- [🛠️ Technologies](#️-technologies)
+- [🔄 Workflow (Manual)](#-workflow-manual)
+- [⚙️ Configuration](#️-configuration)
+- [🌐 Deploy to GitHub Pages (Manual)](#-deploy-to-github-pages-manual)
+- [🌐 GitHub Actions Automation](#-github-actions-automation)
+- [📁 Project Structure](#-project-structure)
 
-#### 🚀 Quick Start for the Data Collection Step
+## ⚡ Quick Start
 
-1. **Install dependencies**
-
-    ```bash
-    npm i
-    ```
-
-2. **Configure a form link**
-    - Create a Google Form for data collection
-    - You can use UID prefilling (the example in the project uses it)
-    - Specify a link to it in the [`src/data/externalLinks.ts`](src/data/externalLinks.ts) file
-
-3. **Make sure collection mode is enabled**
-
-    ```bash
-    npm run stage -- 1
-    ```
-
-4. **Run locally to verify**
-
-    ```bash
-    npm run dev
-    ```
-
-5. **Build and publish the project**
-
-    ```bash
-    npm run build
-    ```
-
-    The completed build from the `docs/` folder is published on GitHub Pages.
-
-### 2️⃣ Stage: Draw and Results
-
-**🎯 Purpose:** Randomly match participants and show each one their recipient.
-
-#### 🚀 Quick Start for the Giveaway Stage
-
-1. **Prepare the Data**
-    - Export responses from Google Forms
-    - Rename the file to `SANTA.csv`
-    - Place it in the `_local/` folder in the project root
-
-    ```shell
-    Structure after preparation:
-    ├─📂 _local/
-    │ ├─ SANTA.csv # responses from Google Forms
-    │ └─ tip.txt
-    └─ ...
-    ```
-
-2. **Run automatic processing**
-
-    ```bash
-    npm run santa_auto
-    ```
-
-    This command:
-    - Makes a backup of the old draw, if any
-    - Runs a new draw based on `SANTA.csv`
-    - Creates the file [`src/data/addresses.ts`](src/data/addresses.ts) with the results
-    - Switch the project to the "Results" mode (stage -- 3)
-    - Builds the project for publication
-
-3. **Publish the results**
-    - The finished build from the `docs/` folder is published on GitHub Pages.
-
----
-
-### 🔧 Manual Stage Management
-
-If you need to separate stages (for example, to test the draw before building), use the following commands separately:
+### Installation
 
 ```bash
-# 1. Run only the draw based on the SANTA.csv file
-# The existing draw version will be moved to _local/backups
-npm run santa
+# Clone the repository
+git clone https://github.com/vic-kk/random-santa.git
+cd random-santa
 
-# 2. Run locally for preview
+# Install dependencies
+npm install
+
+# Development mode
 npm run dev
+```
 
-# 3. Build the project for deployment (GitHub Pages)
+## 📜 Scripts
+> [!TIP]
+> The project supports npm and yarn.  
+> All examples use npm, for yarn replace `npm run` -> `yarn`.
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Build project |
+| `npm run lint` | ESLint code check |
+| `npm run santa` | Run draw (from CSV) |
+| `npm run stage` | Interactive project stage change + build |
+| `npm run stage -- 1 \| 2 \| 3` | Change project stage |
+| `npm run santa_auto` | Draw + switch to final stage (3) |
+| `npm run mock_csv` | Generate mock test CSV (default: 15 entries) |
+| `npm run mock_csv -- N` | Generate mock with N entries |
+| `npm run mock_auto` | Generate mock + draw |
+| `npm run preview` | Preview build |
+
+## ✨ Features
+
+- 🔑 **Unique ID** — generated automatically and saved in localStorage
+- 📋 **Data collection via Google Form** — participants fill out a form with addresses and wishes
+- 🎲 **Automatic draw** — algorithm ensures no one gives a gift to themselves
+- 🎁 **Three project stages**:
+  - **Stage 1** — Data collection (Google Form is displayed)
+  - **Stage 2** — Maintenance (maintenance message is displayed)
+  - **Stage 3** — Results (recipient data is displayed)
+- 📋 **Copy to clipboard** — addresses can be copied with one click
+
+## 🛠️ Technologies
+
+- **React 19** — UI library
+- **TypeScript** — type checking
+- **Vite** — bundler
+- **react-toastify** — notifications
+- **ESLint** — linting
+- **Husky + lint-staged** — pre-commit hooks
+
+## 🔄 Workflow (Manual)
+
+### 1. Data Collection
+- Participants fill out Google Form [form example](https://forms.gle/2z2TJb279D5bpKw9A)
+- Form collects: ID, gender, wishes, delivery addresses
+- Data is exported to CSV
+
+### 2. CSV Preparation
+- Place `SANTA.csv` file in `_local/` folder
+- CSV format (example):
+```csv
+"Отметка времени","Укажи уникальный номер, расположенный на сайте","Укажи свой гендер","Укажи свои пожелания, если хочешь. Что хотелось/не хотелось бы получить.","ОЗОН Адрес","ВБ Адрес"
+"12/15/2025 10:18:29 GMT+7","610665","МУЖИК","Люблю сладкое! 🍫","Москва, улица Молодежная 60 корпус 5","Москва, улица Молодежная 60 корпус 6"
+```
+
+### 3. Draw
+```bash
+npm run santa
+```
+The script:
+- Parses CSV
+- Performs draw (derangement algorithm)
+- Generates `src/data/addresses.ts` with results
+- Creates backup of previous version
+
+### 4. Stage Switching
+```bash
+# Stage 1: Data collection
+npm run stage -- 1
+
+# Stage 2: Maintenance
+npm run stage -- 2
+
+# Stage 3: Results
+npm run stage -- 3
+```
+
+### 5. Deploy
+```bash
+npm run build
+```
+Build is created in `docs/` folder for GitHub Pages.
+
+## ⚙️ Configuration
+
+### External Links (`src/data/externalLinks.ts`)
+
+```typescript
+EXTERNAL_LINKS = {
+  'community': {
+    url: 'COMMUNITY_LINK',           // Link to community for contacting admins
+    text: 'LINK_TEXT'                // displayed link text
+  },
+  'santa_form': {
+    url: 'GOOGLE_FORM_LINK',         // Link to form
+  },
+};
+```
+
+### Feature Flags (`src/features/features.ts`)
+
+```bash
+# interactive stage change, recommended
+npm run stage 
+
+# Generated content
+# FEATURES = { 
+#   IN_SERVICE: false,  // true — show maintenance message
+#   SANTA_READY: true,  // true — show results, false — show form
+# }
+```
+
+## 🌐 Deploy to GitHub Pages (Manual)
+
+1. Build the project:
+```bash
 npm run build
 ```
 
----
+2. Commit `docs/` folder and push to repository
 
-## 🧪 For development and testing
+3. In GitHub repository settings:
+   - Settings → Pages
+   - Source: Deploy from a branch
+   - Branch: main, folder: /docs
 
-### Generating test data
 
-> [!WARNING]
-> Generating test data will completely overwrite the `_local/SANTA.csv` file. Make sure important data is saved.
+## 🌐 GitHub Actions Automation
 
-```bash
-# Full cycle: generating 15 records + draw
-npm run mock_auto
+The repository has several workflows configured:
 
-# CSV generation only
-npm run mock_csv        # default, 15 records
-npm run mock_csv -- N   # N records
+1. **Auto-export from Google Sheets with full shuffle and stage change cycle** — manual Action run in GitHub, needs secret configuration (details in `.github/workflows/`)
+2. **Current stage change** — manual Action run in GitHub
+3. **Deploy to GitHub Pages** — on push to `main`
 
-```
+For auto-export to work, you'll need GitHub Secrets:
+- `CSV_SHEET_ID` — contains Google spreadsheet ID with responses
 
-### Changing stages
-
-```bash
-# Selecting a stage via dialog and building for publishing
-npm run stage_auto
-
-# Only changing stages for a local test
-npm run stage       # Selecting a stage via dialog
-npm run stage -- N  # Explicitly specifying a stage (1 = build, 2 = service, 3 = results)
+## 📁 Project Structure
 
 ```
-
-## 📋 Command Reference (NPM/Yarn Scripts)
-
-| Command | Action | Typical Scenario |
-| :--- | :--- | :--- |
-| **`santa_auto`** | **🎯 Basic command.** Runs draw and build for publishing. | Quick start for deployment. |
-| **`santa`** | Runs only draw of recipients from `SANTA.csv`. | New draw. |
-| **`dev`** | Starts a local dev server for viewing. | Develops and debugs the interface. |
-| **`build`** | Builds the production version of the project. | Prepares for publication. |
-| **`mock_auto`** | Generates a test CSV file (15 records) and runs the draw. | Full-cycle testing. |
-| **`mock_csv[:N]`** | Generates only a test CSV file. | Creates data for debugging. |
-| **`stage_auto`** | Requests the current stage and collects for publishing. | Changes the publishing stage. |
-| **`stage[ -- N]`** | Sets the desired stage. | 1 = collecting, 2 = service, 3 = results |
-
----
-
-## 📦 Project Structure
-
-```shell
-├─📂 _local/                # service folder (in .gitignore)
-│  ├─ SANTA.csv              # raw data from Google Forms
-│  ├─📂 backups/            # backup copies of draws
-│  ├─📂 parced/             # processed data
-│  └─ tip.txt
-├─📂 docs/                  # compiled website for publication
-├─📂 src/
-│  ├─📂 data/
-│  │  ├─ addresses.ts       # results of the current draw
-│  │  └─ externalLinks.ts   # links to External resources
-│  └─📂 features/
-│     └─ features.ts        # stage and function settings
-└─ ...
-```
+random-santa/
+├── src/
+│   ├── containers/          # React components
+│   │   ├── CopyToClipboard/ # Copy to clipboard
+│   │   ├── GoogleForm/      # Google Form embedding
+│   │   ├── Header/          # Header with unique ID
+│   │   ├── InService/       # Maintenance message
+│   │   ├── Recipient/       # Recipient block
+│   │   └── RecipientLine/   # Recipient data line
+│   ├── data/                # Data
+│   │   ├── addresses.ts     # Draw results
+│   │   └── externalLinks.ts # External links
+│   ├── features/            # Feature flags
+│   ├── hooks/               # React hooks
+│   │   └── useSantaId.ts    # Unique ID generation
+│   └── utils/               # Utilities
+│       └── copyToClipboard.ts
+├── node_scripts/            # Node.js scripts
+│   ├── core/                # Core
+│   │   ├── csv-parser.ts    # CSV parsing
+│   │   ├── draw-algorithm.ts# Draw algorithm
+│   │   ├── logger.ts        # Logging
+│   │   └── types.ts         # Types
+│   ├── santa_resort.ts      # Main draw script
+│   ├── set_stage.ts         # Stage switching
+│   └── generate_mock_csv.ts # Test data generation
+├── _local/                  # Local files (not in git)
+│   └── tip.txt              # CSV hint
+└── public/                  # Static files
