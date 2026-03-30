@@ -13,3 +13,11 @@
   }
 }
 
+@media (max-width: 767px) {
+  .recipient-line {
+    .title {
+      font-size: 0.9rem;
+    }
+  }
+}
+

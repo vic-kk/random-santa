@@ -1,7 +1,21 @@
 .form {
   margin-top: 2rem;
   background-color: white;
-  width: 40vw;
-  min-width: 750px;
+  width: 100%;
+  max-width: 750px;
   height: 90vh;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .form {
+    width: 80vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .form {
+    width: 40vw;
+  }
 }

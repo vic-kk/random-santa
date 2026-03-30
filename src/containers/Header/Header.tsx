@@ -24,8 +24,8 @@ const Header = () => {
         >
           <span className="number">{uid}</span>
         </CopyToClipboard>
-        <div>
-          Твой номер уже сохранен на этой странице, но, <br/>
+        <div className='info'>
+          Твой номер уже сохранен на этой странице, но,
           на всякий случай, <u><b>сфотографируй</b></u> или <u><b>запиши его</b></u>
         </div>
         {url && (

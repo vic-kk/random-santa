@@ -1,25 +1,53 @@
 .santa-header {
   display: flex;
+  flex-direction: column;
   margin-bottom: 2rem;
   text-align: center;
   justify-content: center;
+  gap: 1rem;
   
   .title {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
   
   .number {
-    --letter-space: .5rem;
+    --letter-space: .3rem;
     
-    font-size: 5rem;
+    font-size: 3rem;
     font-weight: bold;
     letter-spacing: var(--letter-space);
     margin-right: calc(var(--letter-space)*-1);
     color: rgb(255, 220, 63);
   }
+
+  .info {
+    max-width: 380px;
+    margin: 0 auto;      
+  }
   
   .tg {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: rgb(0, 191, 255);
+  }
+}
+
+@media (min-width: 768px) {
+  .santa-header {
+    flex-direction: row;
+    gap: 0;
+    
+    .title {
+      font-size: 2rem;
+    }
+    
+    .number {
+      --letter-space: .5rem;
+      font-size: 5rem;
+    }
+
+
+    .tg {
+      font-size: 1.2rem;
+    }
   }
 }

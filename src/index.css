@@ -16,7 +16,14 @@
 body {
   margin: 0;
   display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  body {
+    place-items: center;
+  }
 }
