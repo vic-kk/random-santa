@@ -20,7 +20,7 @@ export interface ReSortResult {
  * Для n=150: 1-3 попытки, < 5 мс
  * Для n=90,000: ~2.7 попытки, но каждая попытка O(n) → ~0.5 сек
  */
-export function reSortNoShift(participants: RawParticipant[], maxAttempts: number = 1000): ReSortResult {
+export function reSortNoShift(participants: RawParticipant[], maxAttempts: number = 100): ReSortResult {
   const startTime = performance.now();
   const n = participants.length;
   
