@@ -2,7 +2,7 @@
 
 > Automatic "Secret Santa" draw with Google Forms/Sheets integration and auto-deploy to GitHub Pages
 
-[![Build and Deploy](https://github.com/vic-kk/random-santa/actions/workflows/build-and-deploy.yml/badge.svg)](https://github.com/vic-kk/random-santa/actions/workflows/build-and-deploy.yml)
+[![Build and Deploy](https://github.com/vic-kk/random-santa/actions/workflows/build-and-deploy.yml/badge.svg?branch=main)](https://github.com/vic-kk/random-santa/actions/workflows/build-and-deploy.yml)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/vic-kk/random-santa)
 
 The project solves the main problem of a "Secret Santa" organizer: data collection, preventing self-selection, fair distribution, and publishing results — all in one place with minimal manual work.
