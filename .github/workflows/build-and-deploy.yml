@@ -40,7 +40,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
@@ -56,6 +56,9 @@ jobs:
         with:
           persist-credentials: true
           fetch-depth: 0
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
       
       - name: Pull latest
         if: ${{ inputs.need-update }}
@@ -72,22 +75,17 @@ jobs:
           rm -rf node_modules package-lock.json
           npm install
       
-      # Lint check
       - name: Run ESLint
         run: npm run lint
       
-      # Build up
       - name: Build project
         run: npm run build
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
       
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './docs'
-      
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
