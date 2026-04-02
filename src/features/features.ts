@@ -6,5 +6,5 @@ export const FEATURES = {
   /** 
    * true - display the result, false - display the Google form 
    */ 
-  SANTA_READY: true,
+  SANTA_READY: false,
 }
