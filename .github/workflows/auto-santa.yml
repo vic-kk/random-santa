@@ -107,12 +107,18 @@ jobs:
       - name: Run Santa draw
         run: npm run santa
 
-      - name: Verify addresses.ts was generated
+      - name: Verify parced was generated
         run: |
-          if [ ! -s src/data/addresses.ts ]; then
-            echo "❌ addresses.ts не сгенерирован"
+          if [ ! -s _local/parced/data.js ]; then
+            echo "❌ parced.js не сгенерирован"
             exit 1
           fi
+
+      - name: Export backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: previous-santa
+          path: _local/backups/*.ts
 
       - name: Commit addresses.ts
         run: |
@@ -140,4 +146,3 @@ jobs:
       artifact-name: auto-santa-error-logs
       log-path: |
         _local/SANTA.csv
-        src/data/addresses.ts

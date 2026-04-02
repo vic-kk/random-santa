@@ -97,6 +97,7 @@ jobs:
     needs: build-and-deploy
     uses: ./.github/workflows/upload-error-logs.yml
     with:
-      artifact-name: change-stage-error-logs
+      artifact-name: deploy-error-logs
       log-path: |
+         src/data/addresses.ts
          src/features/features.ts
