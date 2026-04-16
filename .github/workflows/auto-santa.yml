@@ -1,4 +1,4 @@
-name: Export CSV and Santa Draw
+name: Export CSV and Automate deploy
 
 on:
   workflow_dispatch:
