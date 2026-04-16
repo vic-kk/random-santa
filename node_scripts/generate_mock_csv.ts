@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
-// node_scripts/generate-mock-csv.ts
+/**
+ * Скрипт для генерации CSV участников
+ * Запуск: node node_scripts/generate_mock_csv.ts [N]
+ */
 
 import { writeFileSync } from 'fs';
 import path from 'path';
@@ -14,7 +17,9 @@ const __dirname = path.dirname(__filename);
 
 const CSV_PATH = path.resolve(__dirname, '../_local/SANTA.csv');
 
-// Конфигурация
+/**
+ * Конфигурация генератора записей
+ */
 const CONFIG = {
   defaultCount: 15,
   batchSize: 1000,
@@ -33,7 +38,9 @@ const CONFIG = {
   genders: ['Дивчина', 'МУЖИК'],
 };
 
-// Утилиты
+/**
+ * Утилита генерации даты
+ */
 const formatNumber = (num: number): string => 
   num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
@@ -57,6 +64,9 @@ const generateRandomDate = (): string => {
   return `${dateStr.replace(',', '')} GMT+7`;
 };
 
+/**
+ * Утилита генерации UID
+ */
 const generateRandomNumber = (existingNumbers: Set<string>): string => {
   let number: string;
   do {
@@ -66,6 +76,9 @@ const generateRandomNumber = (existingNumbers: Set<string>): string => {
   return number;
 };
 
+/**
+ * Утилита генерации адреса
+ */
 const generateRandomAddress = (city: string | null = null): string => {
   const selectedCity = city || CONFIG.cities[Math.floor(Math.random() * CONFIG.cities.length)];
   const street = CONFIG.streets[Math.floor(Math.random() * CONFIG.streets.length)];
@@ -75,6 +88,9 @@ const generateRandomAddress = (city: string | null = null): string => {
   return `${selectedCity}, улица ${street} ${building}${corpus}`;
 };
 
+/**
+ * Утилита сборки записи участника
+ */
 const generateParticipant = (
   existingNumbers: Set<string>
 ): RawParticipant => {

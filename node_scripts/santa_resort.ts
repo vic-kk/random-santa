@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
-// node_scripts/santa_resort.ts
+/**
+ * Скрипт для перемешивания участников
+ * Запуск: node node_scripts/santa_resort.ts
+ */
 
 import fs from 'fs/promises';
 import path from 'path';
@@ -20,9 +23,11 @@ const PATHS = {
   backupDir: path.resolve(__dirname, '../_local/backups'),
 };
 
-// ============================================
-// 1. РЕЗЕРВНОЕ КОПИРОВАНИЕ
-// ============================================
+/**
+ * РЕЗЕРВНОЕ КОПИРОВАНИЕ
+ * @returns файл 
+ */
+
 async function createBackup(): Promise<{ details: string }> {
   try {
     await fs.access(PATHS.addresses);
@@ -37,9 +42,13 @@ async function createBackup(): Promise<{ details: string }> {
   }
 }
 
-// ============================================
-// 2. СОХРАНЕНИЕ PARSED ФАЙЛА
-// ============================================
+/**
+ * 
+ * СОХРАНЕНИЕ PARSED ФАЙЛА
+ * @param participants 
+ * @param assignments 
+ * @returns файл парсинга
+ */
 async function generateParsedFile(
   participants: RawParticipant[],
   assignments: Map<string, string>
@@ -73,9 +82,13 @@ ${Array.from(assignments.entries()).map(([santa, giftee]) => {
   return { details: `\n\t📁 ${path.relative(process.cwd(), PATHS.parsed)}` };
 }
 
-// ============================================
-// 3. СОХРАНЕНИЕ ФАЙЛА addresses.ts
-// ============================================
+/**
+ * СОХРАНЕНИЕ ФАЙЛА addresses.ts
+ * @param participants 
+ * @param participantsWithGiftee 
+ * @param assignments 
+ * @returns addresses.ts
+ */
 async function generateAddressesFile(
   participants: RawParticipant[],
   participantsWithGiftee: AssignedParticipant[],
@@ -116,9 +129,9 @@ ${participantsWithGiftee.map(p => `  [ "${p.id_santa}", {
   return { details: `\n\t📁 ${path.basename(PATHS.addresses)}` };
 }
 
-// ============================================
-// 4. MAIN
-// ============================================
+/**
+ * MAIN
+ */
 async function main() {
   const manager = new TaskManager([
     '📁 Резервное копирование',

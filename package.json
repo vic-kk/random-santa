@@ -12,7 +12,6 @@
     "santa_auto": "npm run santa && npm run stage -- 3",
     "stage": "node node_scripts/set_stage.ts",
     "mock_csv": "node node_scripts/generate_mock_csv.ts",
-    "mock_auto": "npm run mock_csv && npm run santa",
     "prepare": "husky"
   },
   "dependencies": {

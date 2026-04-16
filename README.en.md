@@ -48,12 +48,11 @@ npm run dev
 | `npm run build` | Build project |
 | `npm run lint` | ESLint code check |
 | `npm run santa` | Run draw (from CSV) |
+| `npm run santa_auto` | Draw + switch to final stage (3) |
 | `npm run stage` | Interactive project stage change + build |
 | `npm run stage -- 1 \| 2 \| 3` | Change project stage |
-| `npm run santa_auto` | Draw + switch to final stage (3) |
 | `npm run mock_csv` | Generate mock test CSV (default: 15 entries) |
 | `npm run mock_csv -- N` | Generate mock with N entries |
-| `npm run mock_auto` | Generate mock + draw |
 | `npm run preview` | Preview build |
 
 ## ✨ Features

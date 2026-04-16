@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 🎮 Скрипт для переключения этапов проекта
+ * Скрипт для переключения этапов проекта
  * Запуск: node node_scripts/set-stage.ts [1|2|3]
  */
 
@@ -36,6 +36,7 @@ const STAGES: Record<StageNumber, Stage> = {
 
 /**
  * Читает текущие флаги из файла features.ts
+ * @returns 
  */
 async function getCurrentFlags(): Promise<FeatureFlags> {
   try {
@@ -56,6 +57,8 @@ async function getCurrentFlags(): Promise<FeatureFlags> {
 
 /**
  * Возвращает название этапа по флагам
+ * @param flags 
+ * @returns 
  */
 function getStageName(flags: FeatureFlags): string {
   if (flags.IN_SERVICE) return STAGES['2'].name;
@@ -65,6 +68,7 @@ function getStageName(flags: FeatureFlags): string {
 
 /**
  * Обновляет файл features.ts с новыми флагами
+ * @param flags 
  */
 async function updateFlags(flags: FeatureFlags): Promise<void> {
   const content = `export const FEATURES = { 
@@ -91,7 +95,7 @@ function isValidStageNumber(arg: string): arg is StageNumber {
 }
 
 /**
- * Основная функция
+ * Основная функция переключения этапа
  */
 async function setStage(): Promise<void> {
   const args = process.argv.slice(2);
