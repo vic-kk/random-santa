@@ -17,6 +17,9 @@ docs
 dist
 dist-ssr
 
+# AI agent context directories
+*ai_agents
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
