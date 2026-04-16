@@ -2,10 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/santa-250.webp" />
+    <link rel="icon" type="image/webp" href="/santa-250.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Тайный Санта" id="og-title" />
+    <meta property="og:description" content="Распределяем подарки и праздничное настроение!" />
+    <meta property="og:image" content="/santa-250.webp" />
     <title>Тайный санта</title>
-    <script>document.title += ` ${(d => d.getFullYear() + !!d.getMonth())(new Date)}`</script>
+    <script>((d) => document.title += ` ${d.getFullYear() + !!d.getMonth()}`)(new Date);</script>
   </head>
   <body>
     <div id="root"></div>
