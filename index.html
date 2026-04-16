@@ -5,6 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="/santa-250.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Тайный санта</title>
+    <script>document.title += ` ${(d => d.getFullYear() + !!d.getMonth())(new Date)}`</script>
   </head>
   <body>
     <div id="root"></div>
