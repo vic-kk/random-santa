@@ -22,8 +22,8 @@ on:
   
 permissions:
   contents: write
-  pages: write
   id-token: write
+  pages: write
 
 concurrency:
   group: "santa-draw"

@@ -27,8 +27,8 @@ on:
 
 permissions:
   contents: write
-  pages: write
   id-token: write
+  pages: write
 
 concurrency:
   group: "build-pages"

@@ -2,52 +2,73 @@ name: Scheduled triggers
 
 on:
   schedule:
-    # тестовый крон на сегодня, 22 апреля 2026, в 10:00 UTC
-    - cron: '0 5 22 4 *'
-    # 1 декабря в 00:00 UTC — change-state
+    # тестовый крон на 23 апреля 2026, в 10:00 UTC + 7
+    - cron: '0 3 23 4 *'
+    - cron: '0 3 24 4 *'
+    # CRON_START - 1 декабря в 00:00 UTC — change-stage
     - cron: '0 0 1 12 *'
-    # 15 декабря в 00:00 UTC — auto-santa
+    # CRON_DRAW - 15 декабря в 00:00 UTC — auto-santa
     - cron: '0 0 15 12 *'
-    # 5 января в 00:00 UTC — change-state
+    # CRON_CLOSE - 5 января в 00:00 UTC — change-stage
     - cron: '0 0 5 1 *'
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+permissions:
+  actions: write
+  contents: read
+  id-token: write
 
 jobs:
   dispatch:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
           persist-credentials: true
           fetch-depth: 0
-
+  
       - name: Dispatch by schedule
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
+          CRON_TEST_ON="0 3 23 4 *"
+          CRON_TEST_OFF="0 3 24 4 *"
+          
+          CRON_START="0 0 1 12 *"
+          CRON_DRAW="0 0 15 12 *"
+          CRON_CLOSE="0 0 5 1 *"
+
           SCHEDULE="${{ github.event.schedule }}"
           echo "Triggered by schedule: $SCHEDULE"
+          
+          case "$SCHEDULE" in
+            "$CRON_TEST_ON")
+              echo "→ Running change-stage for test (23 Apr)"
+              gh workflow run change-stage.yml -f stage="📝 Data collection"
+              ;;
+            "$CRON_TEST_OFF")
+              echo "→ Running change-stage for test (24 Apr)"
+              gh workflow run change-stage.yml -f stage="🛠️ In service"
+              ;;
 
-          if [ "$SCHEDULE" == "0 5 22 4 *" ]; then
-            echo "→ Running change-state for 22 Apr (workflow_call)"
-            gh workflow run change-state.yml -f stage="📝 Data collection"
-
-          elif [ "$SCHEDULE" == "0 0 1 12 *" ]; then
-            echo "→ Running change-state for 1 Dec (workflow_call)"
-            gh workflow run change-state.yml -f stage="📝 Data collection"
-
-          elif [ "$SCHEDULE" == "0 0 15 12 *" ]; then
-            echo "→ Running auto-santa for 15 Dec (workflow_call)"
-            gh workflow run auto-santa.yml -f confirm="🎁 Results"
-
-          elif [ "$SCHEDULE" == "0 0 5 1 *" ]; then
-            echo "→ Running change-state for 5 Jan (workflow_call)"
-            gh workflow run change-state.yml -f stage="🛠️ In service"
-
-          else
-            echo "Unknown schedule: $SCHEDULE — skipping."
-            exit 1
-          fi
+            "$CRON_START")
+              echo "→ Running change-stage for 1 Dec"
+              gh workflow run change-stage.yml -f stage="📝 Data collection"
+              ;;
+            "$CRON_DRAW")
+              echo "→ Running auto-santa for 15 Dec"
+              gh workflow run auto-santa.yml -f confirm="🎁 Results"
+              ;;
+            "$CRON_CLOSE")
+              echo "→ Running change-stage for 5 Jan"
+              gh workflow run change-stage.yml -f stage="🛠️ In service"
+              ;;
+            *)
+              echo "manual test schedule: CRON — skipping."
+              gh workflow run change-stage.yml -f stage="🛠️ In service"
+              ;;
+          esac
