@@ -13,6 +13,12 @@ on:
           - '🛠️ In service'
           - '🎁 Results'
   workflow_call:
+    inputs:
+      confirm:
+        description: 'Подтверждение запуска жеребьевки'
+        required: false
+        type: string
+        default: 'no'
   
 permissions:
   contents: write
