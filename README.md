@@ -5,6 +5,7 @@
 > Автоматическая жеребьёвка «Тайного Санты» с интеграцией Google Forms/Sheets и автодеплоем на GitHub Pages
 
 [![Build and Deploy](https://github.com/vic-kk/random-santa/actions/workflows/build-and-deploy.yml/badge.svg?branch=main)](https://github.com/vic-kk/random-santa/actions/workflows/build-and-deploy.yml)
+[![Scheduled triggers](https://github.com/vic-kk/random-santa/actions/workflows/trigger-multi.yml/badge.svg?event=schedule)](https://github.com/vic-kk/random-santa/actions/workflows/trigger-multi.yml)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/vic-kk/random-santa)
 
 Проект решает главную проблему организатора «Тайного Санты»: сбор данных, исключение повторного выбора самого себя, честное распределение и публикация результатов — всё в одном месте, с минимальным ручным трудом.
