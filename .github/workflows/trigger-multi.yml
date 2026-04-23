@@ -3,14 +3,14 @@ name: Scheduled triggers
 on:
   schedule:
     # тестовый крон на 23 апреля 2026, в 10:00 UTC + 7
-    - cron: '0 3 23 4 *'
-    - cron: '0 3 24 4 *'
+    - cron: '25 0 23 4 *'
+    - cron: '25 0 24 4 *'
     # CRON_START - 1 декабря в 00:00 UTC — change-stage
-    - cron: '0 0 1 12 *'
+    - cron: '25 0 1 12 *'
     # CRON_DRAW - 15 декабря в 00:00 UTC — auto-santa
-    - cron: '0 0 15 12 *'
+    - cron: '25 0 15 12 *'
     # CRON_CLOSE - 5 января в 00:00 UTC — change-stage
-    - cron: '0 0 5 1 *'
+    - cron: '25 0 5 1 *'
   workflow_dispatch:
 
 permissions:
@@ -56,19 +56,19 @@ jobs:
               ;;
 
             "$CRON_START")
-              echo "→ Running change-stage for 1 Dec"
+              echo "→ Running change-stage for 1 Dec ($SCHEDULE)"
               gh workflow run change-stage.yml -f stage="📝 Data collection"
               ;;
             "$CRON_DRAW")
-              echo "→ Running auto-santa for 15 Dec"
+              echo "→ Running auto-santa for 15 Dec ($SCHEDULE)"
               gh workflow run auto-santa.yml -f confirm="🎁 Results"
               ;;
             "$CRON_CLOSE")
-              echo "→ Running change-stage for 5 Jan"
+              echo "→ Running change-stage for 5 Jan ($SCHEDULE)"
               gh workflow run change-stage.yml -f stage="🛠️ In service"
               ;;
             *)
-              echo "manual test schedule: CRON — skipping."
+              echo "manual test schedule: CRON — skipping. ($SCHEDULE)"
               gh workflow run change-stage.yml -f stage="🛠️ In service"
               ;;
           esac
