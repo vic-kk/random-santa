@@ -1,0 +1,38 @@
+name: 'Commit changes'
+description: 'Commits and pushes changes'
+inputs:
+  files:
+    description: 'Files to add'
+    type: string
+    required: true
+  commit-message:
+    description: 'Commit message'
+    type: string
+    required: true
+    default: 'chore: update files [skip ci]'
+runs:
+  using: "composite"
+  steps:
+    - name: Configure Git
+      shell: bash
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+    
+    - name: Push to branch
+      shell: bash
+      run: |
+        git add ${{ inputs.files }}
+        
+        if git diff --staged --quiet; then
+          echo "ℹ️ Нет изменений в ${{ inputs.files }}"
+        else
+          git commit -m "${{ inputs.commit-message }}"
+        fi
+
+        if git push origin main then
+          echo "✅ Изменения отправлены"
+        else
+          echo "❌ Не удалось отправить изменения"
+          exit 1
+        fi

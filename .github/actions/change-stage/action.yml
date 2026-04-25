@@ -1,0 +1,34 @@
+name: 'Set Application Stage'
+description: 'Sets the application stage, commits and pushes changes'
+inputs:
+  stage:
+    description: 'Selected stage'
+    default: '🛠️ In service'
+    required: true
+  git-user-name:
+    description: 'Username for git commit'
+    required: false
+    default: 'GitHub Actions'
+  git-user-email:
+    description: 'Git commit email'
+    required: false
+    default: 'actions@github.com'
+runs:
+  using: "composite"
+  steps:
+    - name: Set stage ${{ inputs.stage }}
+      shell: bash
+      run: |
+        case "${{ inputs.stage }}" in
+          '📝 Data collection') STAGE_NUM=1 ;;
+          '🛠️ In service') STAGE_NUM=2 ;;
+          '🎁 Results') STAGE_NUM=3 ;;
+        esac
+
+        npm run stage -- $STAGE_NUM
+
+    - name: Commit features.ts
+      uses: ./.github/actions/git-commit
+      with:
+        files: 'src/features/features.ts'
+        commit-message: "chore: set stage to '${{ inputs.stage }}' [skip ci]"
