@@ -45,10 +45,6 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
 
-      - name: Pull latest
-        if: ${{ inputs.need-update }}
-        run: git pull origin main
-      
       - name: Setup Node.js
         uses: actions/setup-node@v6.3.0
         with:
@@ -60,28 +56,15 @@ jobs:
           rm -rf node_modules package-lock.json
           npm install
       
+      - name: Pull latest
+        if: ${{ inputs.need-update }}
+        run: git pull origin main
+
       # Manual staging
       - name: Set stage ${{ inputs.stage }} from manual trigger
-        run: |
-          case "${{ inputs.stage }}" in
-            '📝 Data collection')
-              STAGE_NUM=1
-              ;;
-            '🛠️ In service')
-              STAGE_NUM=2
-              ;;
-            '🎁 Results')
-              STAGE_NUM=3
-              ;;
-          esac
-
-          npm run stage -- $STAGE_NUM
-          
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add src/features/features.ts
-          git diff --staged --quiet || git commit -m "chore: set stage to '${{ inputs.stage }}' [skip ci]"
-          git push origin main
+        uses: ./.github/actions/change-stage
+        with:
+          stage: ${{ inputs.stage }}
       
   # Build up
   build-and-deploy:

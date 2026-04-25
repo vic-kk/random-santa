@@ -69,7 +69,6 @@ jobs:
           fi
           
           CSV_URL="https://docs.google.com/spreadsheets/d/${CSV_SHEET_ID}/export?format=csv"
-          echo "CSV_URL=$CSV_URL" >> $GITHUB_ENV
           echo "✅ URL собран"
 
       - name: Download CSV from Google Sheets
@@ -127,24 +126,25 @@ jobs:
           path: _local/backups/*.ts
 
       - name: Commit addresses.ts
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git pull origin main
-          git add src/data/addresses.ts
-          git diff --staged --quiet || git commit -m "chore: auto-draw results by csv export [skip ci]"
-          git push origin main || {
-            echo "❌ Не удалось отправить изменения"
-            exit 1
-          }
+        uses: ./.github/actions/git-commit
+        with:
+          files: 'src/data/addresses.ts'
+          commit-message: 'chore: auto-draw results by csv export [skip ci]'
 
-  change-stage:
+      # Manual staging
+      - name: Set stage ${{ inputs.confirm }} from manual trigger
+        uses: ./.github/actions/change-stage
+        with:
+          stage: ${{ inputs.confirm }}
+
+  # Build up
+  build-and-deploy:
     needs: fetch-and-draw
-    uses: ./.github/workflows/change-stage.yml
+    uses: ./.github/workflows/build-and-deploy.yml
     with:
-      stage: ${{ inputs.confirm }}  # set stage to 2 or 3
       need-update: true
 
+  # Collect logs
   upload-error-logs-on-failure:
     needs: fetch-and-draw
     uses: ./.github/workflows/upload-error-logs.yml
