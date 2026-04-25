@@ -30,7 +30,7 @@ runs:
           git commit -m "${{ inputs.commit-message }}"
         fi
 
-        if git push origin main then
+        if git push origin main; then
           echo "✅ Изменения отправлены"
         else
           echo "❌ Не удалось отправить изменения"
