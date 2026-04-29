@@ -1,7 +1,14 @@
 .recipient-line {
+  background-color: #d3d3d310;
+  padding: .3rem .6rem;
+  border-radius: calc(var(--borderRaduis)/2);
+  
   .title {
     font-weight: bold;
-    text-decoration: underline;
+    background-color: #d3d3d310;
+    border-radius: inherit;
+    padding: .3rem .6rem .4rem .6rem;
+    margin: -.3rem -.6rem .2rem;
   }
   
   .ozon_address {

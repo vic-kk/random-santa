@@ -1,10 +1,40 @@
+@property --angle{
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 .santa-header {
+  --yellow: rgb(255, 220, 63);
+  --linkBlue: #0dbfff;
+
   display: flex;
   flex-direction: column;
-  margin-bottom: 2rem;
   text-align: center;
   justify-content: center;
   gap: 1rem;
+
+  margin: 0 .2rem 2rem;
+  padding: 1.5rem;
+  border-radius: var(--borderRaduis);
+  background-color: var(--backgroundColor);
+  position: relative;
+
+  &::before {
+    position: absolute;
+    content: ' ';
+    display: block;
+    width: calc(100% + .4rem);
+    height: calc(100% + .4rem);
+    background-color: red;
+    top: -.2rem;
+    left: -.2rem;
+    z-index: -1;
+    border-radius: 2.1rem;
+
+    background-image: conic-gradient(from var(--angle), var(--yellow), var(--linkBlue), white, var(--linkBlue), var(--yellow));
+    animation: 4s spin linear infinite;
+  }
   
   .title {
     font-size: 1.5rem;
@@ -17,9 +47,9 @@
     font-weight: bold;
     letter-spacing: var(--letter-space);
     margin-right: calc(var(--letter-space)*-1);
-    color: rgb(255, 220, 63);
+    color: var(--yellow);
   }
-
+  
   .info {
     max-width: 380px;
     margin: 0 auto;      
@@ -35,7 +65,8 @@
   .santa-header {
     flex-direction: row;
     gap: 0;
-    
+    padding: 1.5rem 1.5rem 1.5rem 0;
+
     .title {
       font-size: 2rem;
     }
@@ -45,9 +76,17 @@
       font-size: 5rem;
     }
 
-
     .tg {
       font-size: 1.2rem;
     }
+  }
+}
+
+@keyframes spin {
+  from {
+    --angle: 0deg;
+  }
+  to {
+    --angle: 360deg;
   }
 }
