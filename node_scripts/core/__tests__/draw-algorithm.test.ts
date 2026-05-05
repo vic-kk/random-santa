@@ -16,6 +16,24 @@ function createParticipant(id: string): RawParticipant {
   };
 }
 
+/**
+ * Хелпер для прогона N участников
+ */
+function drawIsCorrect(users: number) {
+  const participants = Array.from({ length: users }, (_, i) =>
+    createParticipant(String(i + 1))
+  );
+  const result = reSortNoShift(participants);
+  // Проверяем, что никто не дарит сам себе
+  for (const [santaId, gifteeId] of result.assignments) {
+    expect(santaId).not.toBe(gifteeId);
+  }
+  // Проверяем количество назначений
+  expect(result.assignments.size).toBe(users);
+  expect(result.participantsWithGiftee.length).toBe(users);
+}
+
+
 describe('reSortNoShift', () => {
   describe('валидация входных данных', () => {
     it('выбрасывает ошибку при пустом массиве', () => {
@@ -38,57 +56,31 @@ describe('reSortNoShift', () => {
 
   describe('корректность алгоритма', () => {
     it('корректно распределяет 2 участников', () => {
-      const participants = [
-        createParticipant('1'),
-        createParticipant('2'),
-      ];
-
-      const result = reSortNoShift(participants);
-
-      // Проверяем, что никто не дарит сам себе
-      for (const [santaId, gifteeId] of result.assignments) {
-        expect(santaId).not.toBe(gifteeId);
-      }
-
-      // Проверяем количество назначений
-      expect(result.assignments.size).toBe(2);
-      expect(result.participantsWithGiftee.length).toBe(2);
+      drawIsCorrect(2);
     });
 
-    it('корректно распределяет 500 участников', () => {
-      const users = 500
-      const participants = Array.from({ length: users }, (_, i) =>
-        createParticipant(String(i + 1))
-      );
+    it('корректно распределяет 100 участников', () => {
+      drawIsCorrect(100);
+    });
 
-      const result = reSortNoShift(participants);
-
-      // Проверяем, что никто не дарит сам себе
-      for (const [santaId, gifteeId] of result.assignments) {
-        expect(santaId).not.toBe(gifteeId);
-      }
-
-      // Проверяем количество назначений
-      expect(result.assignments.size).toBe(users);
-      expect(result.participantsWithGiftee.length).toBe(users);
+    it('корректно распределяет 1000 участников', () => {
+      drawIsCorrect(1000);
     });
 
     it('корректно распределяет 10000 участников', () => {
-      const users = 10000
-      const participants = Array.from({ length: users }, (_, i) =>
-        createParticipant(String(i + 1))
-      );
+      drawIsCorrect(10000);
+    });
 
-      const result = reSortNoShift(participants);
+    it('корректно распределяет 50000 участников', () => {
+      drawIsCorrect(50000);
+    });
 
-      // Проверяем, что никто не дарит сам себе
-      for (const [santaId, gifteeId] of result.assignments) {
-        expect(santaId).not.toBe(gifteeId);
-      }
-
-      // Проверяем количество назначений
-      expect(result.assignments.size).toBe(users);
-      expect(result.participantsWithGiftee.length).toBe(users);
+    it('корректно распределяет 100000 участников', () => {
+      drawIsCorrect(100000);
+    });
+    
+    it('корректно распределяет 400000 участников', () => {
+      drawIsCorrect(400000);
     });
 
     it('каждый участник получает ровно одного получателя', () => {
@@ -108,9 +100,9 @@ describe('reSortNoShift', () => {
 
     it('все участники из входных данных присутствуют в результате', () => {
       const participants = [
-        createParticipant('1'),
-        createParticipant('2'),
-        createParticipant('3'),
+        createParticipant('124489'),
+        createParticipant('258381'),
+        createParticipant('338189'),
       ];
 
       const result = reSortNoShift(participants);

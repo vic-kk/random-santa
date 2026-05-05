@@ -5,7 +5,7 @@
  * Запуск: node node_scripts/generate_mock_csv.ts [N]
  */
 
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { TaskManager, logger } from './core/logger.ts';
@@ -23,10 +23,41 @@ const CSV_PATH = path.resolve(__dirname, '../_local/SANTA.csv');
 const CONFIG = {
   defaultCount: 15,
   batchSize: 1000,
-  cities: ['Москва', 'Санкт-Петербург', 'Новосибирск', 'Екатеринбург', 'Казань'],
-  streets: ['Ленина', 'Пушкина', 'Гагарина', 'Советская', 'Мира'],
+  cities: [
+    'Москва',
+    'Санкт-Петербург',
+    'Новосибирск',
+    'Екатеринбург',
+    'Казань',
+    'Нижний Новгород',
+    'Красноярск',
+    'Челябинск',
+    'Самара',
+    'Уфа',
+    'Ростов-на-Дону',
+    'Краснодар',
+    'Омск',
+    'Воронеж',
+    'Пермь'
+  ],
+  streets: [
+    'Центральная',
+    'Молодежная',
+    'Школьная',
+    'Советская',
+    'Садовая',
+    'Лесная',
+    'Новая',
+    'Ленина',
+    'Набережная',
+    'Октябрьская',
+    'Победы',
+    'Заречная',
+    'Зеленая',
+    'Мира',
+    'Гагарина'
+  ],
   wishes: [
-    '', '', '', '', '', '',
     'Нет пожеланий',
     'Как есть',
     'Любой подарок',
@@ -41,7 +72,7 @@ const CONFIG = {
 /**
  * Утилита генерации даты
  */
-const formatNumber = (num: number): string => 
+const formatNumber = (num: number): string =>
   num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 const generateRandomDate = (): string => {
@@ -80,7 +111,7 @@ const generateRandomNumber = (existingNumbers: Set<string>): string => {
  * Утилита генерации адреса
  */
 const generateRandomAddress = (city: string | null = null): string => {
-  const selectedCity = city || CONFIG.cities[Math.floor(Math.random() * CONFIG.cities.length)];
+  const selectedCity = city;
   const street = CONFIG.streets[Math.floor(Math.random() * CONFIG.streets.length)];
   const building = Math.floor(Math.random() * 200) + 1;
   const corpus = Math.random() > 0.7 ? ` корпус ${Math.floor(Math.random() * 5) + 1}` : '';
@@ -97,21 +128,16 @@ const generateParticipant = (
   const timestamp = generateRandomDate();
   const id = generateRandomNumber(existingNumbers);
   const gender = CONFIG.genders[Math.floor(Math.random() * CONFIG.genders.length)];
-  const wish = CONFIG.wishes[Math.floor(Math.random() * CONFIG.wishes.length)];
+  const wish = Math.random() > 0.2 ? CONFIG.wishes[Math.floor(Math.random() * CONFIG.wishes.length)] : '';
 
-  const city = Math.random() > 0.5 ? null : 'Москва';
+  const city = Math.random() > 0.2 ? CONFIG.cities[Math.floor(Math.random() * CONFIG.cities.length)] : 'Москва';
   const ozon_address = generateRandomAddress(city);
 
   let wb_address: string;
-  if (Math.random() > 0.8) {
-    const newCity = city || (Math.random() > 0.5 ? 'Москва' : 'Санкт-Петербург');
-    wb_address = generateRandomAddress(newCity);
+  if (Math.random() > 0.3) {
+    wb_address = generateRandomAddress(city);
   } else {
-    if (Math.random() > 0.5) {
-      wb_address = ozon_address;
-    } else {
-      wb_address = ozon_address.replace(/корпус \d+/, `корпус ${Math.floor(Math.random() * 5) + 2}`) || ozon_address;
-    }
+    wb_address = ozon_address;
   }
 
   return {
@@ -157,7 +183,6 @@ async function main(): Promise<void> {
     }
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
-
     await manager.runTask(1, async () => {
       return { details: `⚡ ${duration}с` };
     });
@@ -166,15 +191,19 @@ async function main(): Promise<void> {
     await manager.runTask(2, async () => {
       const uniqueCount = existingNumbers.size;
       const isValid = uniqueCount === participants.length;
-      return { 
-        details: isValid 
-          ? `✅ Все ${formatNumber(uniqueCount)} номеров уникальны` 
+      return {
+        details: isValid
+          ? `✅ Все ${formatNumber(uniqueCount)} номеров уникальны`
           : `❌ Найдены дубликаты!`
       };
     });
 
     // Шаг 4: Сохранение в кириллическом формате RFC 4180
     const csvContent = stringifyCyrillicCSV(participants);
+    
+    // Создаём директорию если её нет
+    mkdirSync(path.dirname(CSV_PATH), { recursive: true });
+    
     writeFileSync(CSV_PATH, csvContent, 'utf8');
 
     await manager.runTask(3, async () => {
@@ -183,7 +212,7 @@ async function main(): Promise<void> {
 
     // Шаг 5: Превью
     await manager.runTask(4, async () => {
-      const preview = participants.slice(0, 3).map(p => 
+      const preview = participants.slice(0, 3).map(p =>
         `${p.id} | ${p.gender} | ${p.wishes.slice(0, 30)}...`
       ).join('\n');
 
