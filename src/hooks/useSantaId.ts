@@ -11,6 +11,16 @@ const generateNumber = () => {
  */
 const useSantaId = () => {
   const [id] = useState<string>(() => {
+    const params = new URLSearchParams(location.search);
+
+    if (params.has('nid')) {
+      const forcedId = params.get('nid')!;
+      if (forcedId.length == 6) {
+        localStorage.setItem(LS_KEY, forcedId);
+      };
+      history.replaceState(null, '', location.pathname);
+    }
+
     if (!localStorage.getItem(LS_KEY)) {
       const randomNumber = generateNumber().toString();
       localStorage.setItem(LS_KEY, randomNumber);
