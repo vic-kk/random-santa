@@ -1,12 +1,12 @@
 import { EXTERNAL_LINKS, TLinkItem } from 'src/data';
 import { useSantaId } from 'src/hooks';
-import './IntegredForm.css'
+import './IntegratedForm.css'
 
 function processFormUrl(url: string, uid: string) {
   return url.includes('pp_url&entry') ? url.concat(uid) : url;
 }
 
-const IntegredForm = () => {
+const IntegratedForm = () => {
   const uid = useSantaId();
 
   const { url, text } = EXTERNAL_LINKS.get('santa_form') as TLinkItem;
@@ -16,4 +16,4 @@ const IntegredForm = () => {
   )
 }
 
-export default IntegredForm;
+export default IntegratedForm;

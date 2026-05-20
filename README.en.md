@@ -181,7 +181,7 @@ random-santa/
 ├── src/
 │   ├── containers/          # React components
 │   │   ├── CopyToClipboard/ # Copy to clipboard
-│   │   ├── GoogleForm/      # Google Form embedding
+│   │   ├── IntegratedForm/  # Google Form embedding
 │   │   ├── Header/          # Header with unique ID
 │   │   ├── InService/       # Maintenance message
 │   │   ├── Recipient/       # Recipient block

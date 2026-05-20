@@ -183,7 +183,7 @@ random-santa/
 ├── src/
 │   ├── containers/          # React-компоненты
 │   │   ├── CopyToClipboard/ # Копирование в буфер
-│   │   ├── GoogleForm/      # Встраивание Google Form
+│   │   ├── IntegratedForm/  # Встраивание Google Form
 │   │   ├── Header/          # Шапка с уникальным ID
 │   │   ├── InService/       # Сообщение об обслуживании
 │   │   ├── Recipient/       # Блок получателя

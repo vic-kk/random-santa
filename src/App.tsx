@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { FEATURES } from 'src/features';
 import { DeliveryData, DeliveryDataKeys, DeliveryDataValue, DELIVERY_DATA } from 'src/data';
-import { IntegredForm, Header, InService, Recipient, RecipientLine, Snow } from 'src/containers';
+import { IntegratedForm, Header, InService, Recipient, RecipientLine, Snow } from 'src/containers';
 import { useSantaId } from 'src/hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -38,7 +38,7 @@ function App() {
       {!FEATURES.IN_SERVICE && (
         <>
           {!FEATURES.SANTA_READY && (
-            <IntegredForm/>
+            <IntegratedForm/>
           )} 
 
           {FEATURES.SANTA_READY && (
