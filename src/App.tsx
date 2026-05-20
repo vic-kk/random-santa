@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { FEATURES } from 'src/features';
 import { DeliveryData, DeliveryDataKeys, DeliveryDataValue, DELIVERY_DATA } from 'src/data';
-import { IntegredForm, Header, InService, Recipient, RecipientLine } from 'src/containers';
+import { IntegredForm, Header, InService, Recipient, RecipientLine, Snow } from 'src/containers';
 import { useSantaId } from 'src/hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -48,6 +48,8 @@ function App() {
           )}
         </>
       )}
+
+      <Snow />
 
       <ToastContainer />
     </>
