@@ -7,17 +7,17 @@ const generateNumber = () => {
 }
 
 /**
- * returns UID from LS
+ * set and return UID from LS
  */
 const useSantaId = () => {
   const [id] = useState<string>(() => {
     const params = new URLSearchParams(location.search);
 
     if (params.has('nid')) {
-      const forcedId = params.get('nid')!;
-      if (forcedId.length == 6) {
+      const forcedId = params.get('nid');
+      if (forcedId && /^\d{6}$/.test(forcedId)) {
         localStorage.setItem(LS_KEY, forcedId);
-      };
+      }
       history.replaceState(null, '', location.pathname);
     }
 
