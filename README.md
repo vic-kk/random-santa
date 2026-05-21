@@ -174,7 +174,9 @@ npm run build
 3. **Деплой на GitHub Pages** — при пуше в `main`
 
 Для работы автовыгрузки потребуются GitHub Secrets:
-- `CSV_SHEET_ID` — содержит id Google таблицы с ответами
+- `CSV_SHEET_ID` — содержит id Google таблицы с ответами.  
+  Получить id таблицы из ссылки вашей таблицы `https://docs.google...sheets/d/<тут id таблицы>/...`
+
 
 ## 📁 Структура проекта
 

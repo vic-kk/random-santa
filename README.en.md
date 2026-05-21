@@ -172,7 +172,8 @@ The repository has several workflows configured:
 3. **Deploy to GitHub Pages** — on push to `main`
 
 For auto-export to work, you'll need GitHub Secrets:
-- `CSV_SHEET_ID` — contains Google spreadsheet ID with responses
+- `CSV_SHEET_ID` — contains Google spreadsheet ID with responses.  
+  Get the table id from your table's link `https://docs.google...sheets/d/<table id here>/...`
 
 ## 📁 Project Structure
 
